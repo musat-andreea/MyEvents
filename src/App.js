@@ -3,8 +3,14 @@ import './App.css';
 import Navigation from "./Components/Navigation/Navigation.js";
 import Signin from "./Components/Signin/Signin.js";
 import Register from "./Components/Register/Register.js";
+import MyEvents from "./Components/MyEvents/MyEvents.js";
+import CurrentSituation from "./Components/CurrentSituation/CurrentSituation.js";
+import SearchEvent from "./Components/SearchEvent/SearchEvent.js";
+import SaveEvents from "./Components/SaveEvents/SaveEvents.js";
+import CreateEvent from "./Components/CreateEvent/CreateEvent.js";
 import Logo from "./Components/Logo/Logo.js";
 import Particles from "react-particles-js";
+
 
 const particleOptions = {
     particles: {
@@ -17,6 +23,7 @@ const particleOptions = {
         }
     }
 }
+
 
 const initialState = {
     input:'',
@@ -72,12 +79,20 @@ class App extends Component {
     return (
         <div className="App">
 
+
             <Particles className="particles"
                 params={particleOptions}/>
           <Navigation isSignedIn={this.state.isSignedIn} onRouteChange={this.onRouteChange} />
             { this.state.route === 'home'
                 ? <div>
                     <Logo />
+                    <div>
+                        <CurrentSituation />
+                        <SearchEvent />
+                        <MyEvents />
+                        <br />
+                        <SaveEvents  />
+                    </div>
                 </div>
                 : (
                     this.state.route === 'signin'
