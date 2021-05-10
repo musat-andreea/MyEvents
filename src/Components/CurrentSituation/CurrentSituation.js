@@ -1,6 +1,5 @@
 import React from 'react';
 import Select from 'react-select';
-//import LastDaySituation from '../../resources/last_day.json';
 import axios from "axios";
 
 
@@ -11,7 +10,9 @@ class CurrentSituation extends React.Component {
         this.state = {
             options: [],
             selected_county_total_cases: 0,
-            county_info: {}
+            county_info: {},
+            rate: {},
+            selected_rate: 0
         }
 
         this.handleChangeEvent = this.handleChangeEvent.bind(this);
@@ -20,11 +21,12 @@ class CurrentSituation extends React.Component {
 
         let county_info = {};
         let options = [];
+        let rate = {};
 
-        axios.get('http://localhost:5000/last_day_situation')
+        axios.get('http://localhost:5000/last_days_situation')
             .then((response) => {
                 console.log("res", response);
-                let LastDaySituation = response.data;
+                let LastDaySituation = response.data[0];
 
                 for (let i = 0; i < LastDaySituation.county_data.length; i++) {
                     let j = LastDaySituation.county_data[i];
@@ -39,9 +41,27 @@ class CurrentSituation extends React.Component {
 
                 }
 
+                let beforeLastDaySituation = response.data[13];
+                console.warn(response.data)
+
+                for(let i =0; i < beforeLastDaySituation.county_data.length; i++) {
+                    let j = beforeLastDaySituation.county_data[i];
+                    let judet = j.county_name;
+                    let cases = j.total_cases;
+                    let population = j.county_population;
+
+                    let new_cases_TODAY = county_info[judet] - cases;
+                    console.log('TODAY', new_cases_TODAY)
+                    rate[judet] = (new_cases_TODAY/ population ) * 1000;
+                    console.log(judet, rate[judet]);
+
+                }
+
+
                 this.setState({
                     options: options,
-                    county_info: county_info
+                    county_info: county_info,
+                    rate: rate
                 });
             });
     }
@@ -51,7 +71,12 @@ class CurrentSituation extends React.Component {
 
         this.setState({
             selected_county_info: this.state.county_info[event.value]
-        })
+        });
+
+        this.setState({
+            selected_rate: this.state.rate[event.value]
+        });
+
     }
 
     render() {
@@ -62,6 +87,11 @@ class CurrentSituation extends React.Component {
                 <div id="total_cases">
                     {this.state.selected_county_info}
                 </div>
+
+                <div id="rate">
+                    {this.state.selected_rate}
+                </div>
+
             </div>
         );
 
