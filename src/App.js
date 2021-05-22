@@ -10,7 +10,10 @@ import SaveEvents from "./Components/SaveEvents/SaveEvents.js";
 import CreateEvent from "./Components/CreateEvent/CreateEvent.js";
 import Logo from "./Components/Logo/Logo.js";
 import Particles from "react-particles-js";
-
+import Scroll from "./Components/Scroll.js";
+import SearchBox from "./Components/SearchBox.js";
+import ErrorBoundry from "./Components/ErrorBoundry.js";
+import { setSearchField, requestEvents } from "./actions.js";
 
 const particleOptions = {
     particles: {
@@ -32,6 +35,7 @@ const initialState = {
     user: {
         id: '',
         name: '',
+        rol: '',
         email: '',
         entries: 0,
         joined: ''
@@ -41,7 +45,7 @@ const initialState = {
 class App extends Component {
 
     constructor() {
-        super()
+        super();
         this.state = initialState;
 
     }
@@ -50,6 +54,7 @@ class App extends Component {
         this.setState({user: {
             id: data.id,
             name: data.name,
+            rol: data.rol,
             email: data.email,
             entries: data.entries,
             joined: data.joined
@@ -70,11 +75,17 @@ class App extends Component {
         } else if(route === 'home') {
             this.setState({isSignedIn: true})
         }
+
+
         this.setState({route: route});
     }
 
     render()
   {
+      /*const { searchField, onSearchChange, events, isPending } = this.props;
+      const filterEvents = events.filter(event => {
+          return event.name.toLowerCase().includes(searchField.toLowerCase())
+      })*/
 
     return (
         <div className="App">
@@ -86,22 +97,40 @@ class App extends Component {
             { this.state.route === 'home'
                 ? <div>
                     <Logo />
-                    <div>
-                        <CurrentSituation />
-                        <SearchEvent />
-                        <MyEvents />
-                        <br />
-                        <SaveEvents  />
-                    </div>
+                    {/*
+                    */}
+                    {/*
+                    */}
+
+                    {console.log("AICI AM:", this.state.user.rol)}
+                    {
+                        this.state.user.rol === 'PARTICIPANT'
+
+                        ? <div>
+                            <CurrentSituation/>
+                            {/*<SearchBox searchChange={onSearchChange} />*/}
+                            <SearchEvent/>
+                            <Scroll>
+                                {/*<ErrorBoundry>
+                                <MyEvents events={filterEvents}/>
+                            </ErrorBoundry>*/}
+                            </Scroll>
+
+
+                            <br/>
+                            <SaveEvents/>
+                        </div>
+                        : <div>
+                            <h1>MODUL ADIMINISTRATOR</h1>
+                        </div>
+                    }
+
                 </div>
                 : (
                     this.state.route === 'signin'
                     ? <Signin loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
                     : <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
                 )
-
-
-
             }
 
         </div>

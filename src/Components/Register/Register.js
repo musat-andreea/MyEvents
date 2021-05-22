@@ -7,7 +7,8 @@ class Register extends React.Component {
         this.state = {
             email: '',
             password: '',
-            name: ''
+            name: '',
+            rol: ''
         }
     }
 
@@ -23,6 +24,10 @@ class Register extends React.Component {
         this.setState({password: event.target.value})
     }
 
+    onRolChange = (event) => {
+        this.setState({rol: event.target.value})
+    }
+
     onSubmitSignIn =() => {
         //console.log(this.state); //afiseaza ctrl+shift+i userul si parola introduse de utilizator
         fetch('http://localhost:3000/register', {
@@ -31,6 +36,7 @@ class Register extends React.Component {
             body: JSON.stringify({
                 name: this.state.name,
                 email: this.state.email,
+                rol: this.state.rol,
                 password: this.state.password
             })
         })
@@ -64,7 +70,20 @@ class Register extends React.Component {
                                 />
                             </div>
                             <div className="mt3">
+                                <label className="db fw6 lh-copy f6" htmlFor="rol">Rol</label>
+
+                                <input
+                                    className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
+                                    type="text"
+                                    name="rol"
+                                    id="rol"
+                                    onChange={this.onRolChange}
+                                />
+                                <h5>*Completeaza cu ORGANIZATOR sau PARTICIPANT</h5>
+                            </div>
+                            <div className="mt3">
                                 <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
+
                                 <input
                                     className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                                     type="email"

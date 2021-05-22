@@ -23,6 +23,7 @@ class CurrentSituation extends React.Component {
         let options = [];
         let rate = {};
 
+
         axios.get('http://localhost:5000/last_days_situation')
             .then((response) => {
                 console.log("res", response);
@@ -55,6 +56,7 @@ class CurrentSituation extends React.Component {
                     rate[judet] = (new_cases_TODAY/ population ) * 1000;
                     console.log(judet, rate[judet]);
 
+
                 }
 
 
@@ -62,6 +64,7 @@ class CurrentSituation extends React.Component {
                     options: options,
                     county_info: county_info,
                     rate: rate
+
                 });
             });
     }
@@ -76,6 +79,8 @@ class CurrentSituation extends React.Component {
         this.setState({
             selected_rate: this.state.rate[event.value]
         });
+
+
 
     }
 
@@ -92,9 +97,25 @@ class CurrentSituation extends React.Component {
                     {this.state.selected_rate}
                 </div>
 
+                <div id="rate">
+                    {
+                        this.state.selected_rate < 1.5
+                            ?<div>
+                                <p>Scenariul VERDE</p>
+                            </div>
+                            :(
+                                this.state.selected_rate > 3
+                                ? <div>
+                                    <p>Scenariu ROSU</p>
+                                    </div>
+                                    : <div>
+                                        <p>Scenariu GALBEN</p>
+                                    </div>
+                            )
+                    }
+                </div>
             </div>
         );
-
     }
 }
 
