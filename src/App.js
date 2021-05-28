@@ -11,9 +11,11 @@ import CreateEvent from "./Components/CreateEvent/CreateEvent.js";
 import Logo from "./Components/Logo/Logo.js";
 import Particles from "react-particles-js";
 import Scroll from "./Components/Scroll.js";
+import CardList from "./Components/CardList/CardList.js";
 import SearchBox from "./Components/SearchBox.js";
 import ErrorBoundry from "./Components/ErrorBoundry.js";
 import { setSearchField, requestEvents } from "./actions.js";
+
 
 const particleOptions = {
     particles: {
@@ -110,10 +112,12 @@ class App extends Component {
                             <CurrentSituation/>
                             {/*<SearchBox searchChange={onSearchChange} />*/}
                             <SearchEvent/>
+                                <CardList />
                             <Scroll>
                                 {/*<ErrorBoundry>
                                 <MyEvents events={filterEvents}/>
                             </ErrorBoundry>*/}
+                                <CardList />
                             </Scroll>
 
 
