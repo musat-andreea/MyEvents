@@ -92,10 +92,11 @@ class App extends Component {
     return (
         <div className="App">
 
-
             <Particles className="particles"
                 params={particleOptions}/>
           <Navigation isSignedIn={this.state.isSignedIn} onRouteChange={this.onRouteChange} />
+
+            <CardList />
             { this.state.route === 'home'
                 ? <div>
                     <Logo />
@@ -112,7 +113,7 @@ class App extends Component {
                             <CurrentSituation/>
                             {/*<SearchBox searchChange={onSearchChange} />*/}
                             <SearchEvent/>
-                                <CardList />
+
                             <Scroll>
                                 {/*<ErrorBoundry>
                                 <MyEvents events={filterEvents}/>
