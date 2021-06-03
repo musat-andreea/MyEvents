@@ -5,3 +5,7 @@
 .bgColors {
     background: lightcoral;
 }
+
+.form_create_event {
+    margin: 0 auto;
+}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button, Form } from 'react-bootstrap';
 
 class CreateEvent extends React.Component{
 
@@ -98,27 +99,38 @@ class CreateEvent extends React.Component{
     {
         return(
             <div>
-                <button onClick={this.openCreateEventForm}>Creeaza eveniment</button>
-
+                <Button variant="outline-info" onClick={this.openCreateEventForm}>Creeaza eveniment</Button>
+                <br />
+                <br />
                 <form id = "createEventForm" style={{display: "none"}}>
-                    <div className="form_create_event" style={{margin: "auto"}}>
-                        <input type="text" name = "denumire" id = "denumire" placeholder="Denumire eveniment" style={{display: "flex"}} onChange={this.onDenumireChange}/>
-                        <input type="text" name = "data" id = "data" placeholder="Data evenimentului" style={{display: "flex"}} onChange={this.onDataChange}/>
-                        <input type="number" name = "durata" id = "durata" placeholder="Durata evenimentului" style={{display: "block"}} onChange={this.onDurataChange}/>
-                        <input type="text" name = "tip_eveniment" id = "tip_eveniment" placeholder="Tipul evenimentului" style={{display: "block"}} onChange={this.onTipChange}/>
-                        <input type="text" name = "tematica" id = "tematica" placeholder="Tematica evenimentului" style={{display: "block"}} onChange={this.onTemaChange}/>
-                        <p style={{display: "block"}}>Coperta evenimentului:</p>
-                        <input type="text" name = "coperta" id = "coperta" placeholder="Coperta evenimentului" onChange={this.onCopertaChange}/>
-                        <input type="text" name = "descriere" id = "descriere" placeholder="Descrierea evenimentului" style={{display: "block"}} onChange={this.onDescriereChange}/>
-                        <input type="number" name = "nr_loc" id = "nr_loc" placeholder="Numarul de locuri" style={{display: "block"}} onChange={this.onNumarLocChange}/>
-                        <input type="text" name = "locatie" id = "locatie" placeholder="Locatia evenimentului" style={{display: "block"}} onChange={this.onLocatieChange}/>
-
-                        <input
+                    <div className="form_create_event" style={{margin: "0 auto"}}>
+                        <Form.Group>
+                            <Form.Control type="text" name = "denumire" id = "denumire" placeholder="Denumire eveniment" style={{margin: "0 auto"}} onChange={this.onDenumireChange}/>
+                            <br />
+                            <Form.Control type="text" name = "data" id = "data" placeholder="Data evenimentului" style={{display: "flex"}} onChange={this.onDataChange}/>
+                            <br />
+                            <Form.Control type="number" name = "durata" id = "durata" placeholder="Durata evenimentului" style={{display: "block"}} onChange={this.onDurataChange}/>
+                            <br />
+                            <Form.Control type="text" name = "tip_eveniment" id = "tip_eveniment" placeholder="Tipul evenimentului" style={{display: "block"}} onChange={this.onTipChange}/>
+                            <br />
+                            <Form.Control type="text" name = "tematica" id = "tematica" placeholder="Tematica evenimentului" style={{display: "block"}} onChange={this.onTemaChange}/>
+                            <br />
+                            <p style={{display: "block"}}>Coperta evenimentului:</p>
+                            <Form.Control type="text" name = "coperta" id = "coperta" placeholder="Coperta evenimentului" onChange={this.onCopertaChange}/>
+                            <br />
+                            <Form.Control type="text" name = "descriere" id = "descriere" placeholder="Descrierea evenimentului" style={{display: "block"}} onChange={this.onDescriereChange}/>
+                            <br />
+                            <Form.Control type="number" name = "nr_loc" id = "nr_loc" placeholder="Numarul de locuri" style={{display: "block"}} onChange={this.onNumarLocChange}/>
+                            <br />
+                            <Form.Control type="text" name = "locatie" id = "locatie" placeholder="Locatia evenimentului" style={{display: "block"}} onChange={this.onLocatieChange}/>
+                        </Form.Group>
+                        <Button
+                            variant="primary"
                             onClick={this.onSubmitEvent}
                             type = "submit"
-                            value = "Trimite"
+
                             style={{display: "block"}}
-                        />
+                        >Trimite</Button>
 
                     </div>
                 </form>
