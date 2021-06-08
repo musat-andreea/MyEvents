@@ -143,7 +143,6 @@ class App extends Component {
                         ? <div>
                             <CurrentSituation/>
                             {/*<SearchBox searchChange={onSearchChange} />*/}
-                            <SearchEvent/>
 
                             <Scroll>
                                 {/*<ErrorBoundry>

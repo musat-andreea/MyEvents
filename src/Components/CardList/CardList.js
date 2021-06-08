@@ -6,6 +6,7 @@ import {
 } from 'reactstrap';
 import axios from 'axios';
 import Row from "react-bootstrap/Row";
+import SearchEvent from "../SearchEvent/SearchEvent";
 
 class CardList extends React.Component {
     constructor(props) {
@@ -16,7 +17,58 @@ class CardList extends React.Component {
         };
 
         this.toggle = this.toggle.bind(this);
+        this.handleLocationSearchChange = this.handleLocationSearchChange.bind(this);
+        this.handleDenumireSearchChange = this.handleDenumireSearchChange.bind(this);
+        this.handleMultiFilter = this.handleMultiFilter.bind(this);
     }
+
+    handleDenumireSearchChange(event)   {
+
+        axios.get(`http://localhost:3000/getEvents?denumire=${event.target.value}`)
+            .then((response) => {
+                console.log("Rezultatul json din BD", response);
+                let InfoAboutEvents = response.data[0];
+
+                //console.log("InfoAboutE: ", response.data.length);
+
+                this.setState({eventsList: response.data});
+
+                // UNDEFINEDED
+                console.log("eventsList:", this.state.eventsList)
+            })
+    }
+
+    handleLocationSearchChange(event)   {
+
+        axios.get(`http://localhost:3000/getEvents?locatie=${event.target.value}`)
+            .then((response) => {
+                console.log("Rezultatul json din BD", response);
+                let InfoAboutEvents = response.data[0];
+
+                //console.log("InfoAboutE: ", response.data.length);
+
+                this.setState({eventsList: response.data});
+
+                // UNDEFINEDED
+                console.log("eventsList:", this.state.eventsList)
+            })
+    }
+
+    handleMultiFilter(event)   {
+        axios.get(`http://localhost:3000/getEvents?locatie=${document.getElementById('locatie').value}&denumire=${document.getElementById('denumire').value}`)
+            .then((response) => {
+                console.log("Rezultatul json din BD", response);
+                let InfoAboutEvents = response.data[0];
+
+                //console.log("InfoAboutE: ", response.data.length);
+
+                this.setState({eventsList: response.data});
+
+                // UNDEFINEDED
+                console.log("eventsList:", this.state.eventsList)
+            })
+    }
+
 
     toggle() {
         this.setState({
@@ -25,8 +77,6 @@ class CardList extends React.Component {
     }
 
     componentDidMount() {
-
-
         axios.get('http://localhost:3000/getEvents')
             .then((response) => {
                 console.log("Rezultatul json din BD", response);
@@ -38,7 +88,6 @@ class CardList extends React.Component {
 
                 // UNDEFINEDED
                 console.log("eventsList:", this.state.eventsList)
-
             })
 
     }
@@ -71,6 +120,9 @@ class CardList extends React.Component {
                     href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css'
                 />
                 <Row>
+                    <SearchEvent handleLocationSearchChange={this.handleLocationSearchChange} handleDenumireSearchChange={this.handleDenumireSearchChange} handleMultiFilter={this.handleMultiFilter}/>
+                </Row>
+                <Row>
                     {
                         this.state.eventsList.map((event) => {
                             return (
@@ -92,7 +144,7 @@ class CardList extends React.Component {
                                                 <p>Durata evenimentului: {event.durata_ev} zile</p>
                                                 <p>Tipul evenimentului: {event.tip_eveniment}</p>
                                                 <p>Tematica evenimentului: {event.tematica}</p>
-                                                <p>Numarul de locuri: {event.nr_locuri}</p>
+                                                <p>Numarul de locuori: {event.nr_locuri}</p>
                                             </ModalBody>
                                             <ModalFooter>
                                                 <Button color='primary' onClick={this.toggle}>Participa!</Button>{' '}
