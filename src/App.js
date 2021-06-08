@@ -11,6 +11,7 @@ import CreateEvent from "./Components/CreateEvent/CreateEvent.js";
 import Logo from "./Components/Logo/Logo.js";
 import Particles from "react-particles-js";
 import Scroll from "./Components/Scroll.js";
+import AddInfo from "./Components/AddInfo/AddInfo.js";
 import CardList from "./Components/CardList/CardList.js";
 import SearchBox from "./Components/SearchBox.js";
 import ErrorBoundry from "./Components/ErrorBoundry.js";
@@ -41,6 +42,19 @@ const initialState = {
         email: '',
         entries: 0,
         joined: ''
+    },
+    event: {
+        eventid: '',
+        managerid: '',
+        denumire: '',
+        data_ev: '',
+        durata_ev: '',
+        tip_eveniment: '',
+        tematica: '',
+        coperta: '',
+        descriere: '',
+        nr_locuri: 0,
+        locatie: ''
     }
 }
 
@@ -62,6 +76,23 @@ class App extends Component {
             joined: data.joined
         }})
     }
+
+    loadEvent = (data) => {
+        this.setState({eveniment: {
+                eventid: data.eventid,
+                managerid: data.managerid,
+                denumire: data.denumire,
+                data_ev: data.data_ev,
+                durata_ev: data.durata_ev,
+                tip_eveniment: data.tip_eveniment,
+                tematica: data.tematica,
+                coperta: data.coperta,
+                descriere: data.descriere,
+                nr_locuri: data.nr_locuri,
+                locatie: data.locatie
+            }})
+    }
+
     /*
     componentDidMount() {
         fetch('http://localhost:3000')
@@ -118,13 +149,14 @@ class App extends Component {
                                 {/*<ErrorBoundry>
                                 <MyEvents events={filterEvents}/>
                             </ErrorBoundry>*/}
-                                <CardList col={3}/>
-                                <CardList col={3}/>
+                                <CardList col={12}/>
                             </Scroll>
 
 
                             <br/>
                             <SaveEvents/>
+                            <br />
+                            <AddInfo userId = {this.state.user.id}/>
                         </div>
                         : <div>
                             <h1>MODUL ADIMINISTRATOR</h1>

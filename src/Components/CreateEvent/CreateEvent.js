@@ -15,56 +15,56 @@ class CreateEvent extends React.Component{
             descriere: '',
             nr_loc: 0,
             locatie: ''
-        }
+        };
 
 
         this.openCreateEventForm = this.openCreateEventForm.bind(this);
     }
 
     onDenumireChange = (event) => {
-        this.setState({denumire: event.target.value})
+        this.setState({denumire: event.target.value});
         console.log(this.state);
-    }
+    };
 
     onDataChange = (event) => {
-        this.setState({data: event.target.value})
+        this.setState({data: event.target.value});
         console.log(this.state);
-    }
+    };
 
     onDurataChange = (event) => {
-        this.setState({durata: event.target.value})
+        this.setState({durata: event.target.value});
         console.log(this.state);
-    }
+    };
 
     onTipChange = (event) => {
-        this.setState({tip_eveniment: event.target.value})
+        this.setState({tip_eveniment: event.target.value});
         console.log(this.state);
-    }
+    };
 
     onTemaChange = (event) => {
-        this.setState({tematica: event.target.value})
+        this.setState({tematica: event.target.value});
         console.log(this.state);
-    }
+    };
 
     onCopertaChange = (event) => {
-        this.setState({coperta: event.target.value})
+        this.setState({coperta: event.target.value});
         console.log(this.state);
-    }
+    };
 
     onDescriereChange = (event) => {
-        this.setState({descriere: event.target.value})
+        this.setState({descriere: event.target.value});
         console.log(this.state);
-    }
+    };
 
     onNumarLocChange = (event) => {
-        this.setState({nr_loc: event.target.value})
+        this.setState({nr_loc: event.target.value});
         console.log(this.state);
-    }
+    };
 
     onLocatieChange = (event) => {
-        this.setState({locatie: event.target.value})
+        this.setState({locatie: event.target.value});
         console.log(this.state);
-    }
+    };
 
     openCreateEventForm(event)   {
         document.getElementById('createEventForm').style.display = "table-cell";
@@ -93,7 +93,7 @@ class CreateEvent extends React.Component{
                 console.log(response);
             })
 
-    }
+    };
 
     render()
     {
