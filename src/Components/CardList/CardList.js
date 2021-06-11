@@ -104,6 +104,18 @@ class CardList extends React.Component {
         })
     };
 
+    onAddSavedEvent = (e, event_id) => {
+        e.preventDefault();
+        fetch('http://localhost:3000/saved', {
+            method: 'post',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                user_id: this.props.userId,
+                eventid: event_id
+            })
+        })
+    };
+
 
     render() {
 
@@ -169,9 +181,11 @@ class CardList extends React.Component {
                                         <CardLink href={`https://www.google.ro/maps/place/${event.locatie}`} target="_blank">{event.locatie}</CardLink>
                                     </CardBody>
                                     <Button color="info" onClick={
-                                        (e) => this.onAddFavoriteEvent(e, event.eventid)
+                                        (e) => this.onAddSavedEvent(e, event.eventid)
                                     }>Participa!</Button>
-                                    <Button color="primary">Adauga la favorite!</Button>
+                                    <Button color="primary" onClick={
+                                        (e) => this.onAddFavoriteEvent(e, event.eventid)
+                                    }>Adauga la favorite!</Button>
                                 </Card>
                             )
                         })

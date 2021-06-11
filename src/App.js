@@ -154,7 +154,7 @@ class App extends Component {
 
 
                             <br/>
-                            <SaveEvents/>
+                            <SaveEvents userId = {this.state.user.id}/>
                             <br/>
                             <FavoriteEvents userId = {this.state.user.id}/>
                             <br />
