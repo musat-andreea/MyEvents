@@ -92,6 +92,19 @@ class CardList extends React.Component {
 
     }
 
+    onAddFavoriteEvent = (e, event_id) => {
+        e.preventDefault();
+        fetch('http://localhost:3000/favorite', {
+            method: 'post',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                user_id: this.props.userId,
+                eventid: event_id
+            })
+        })
+    };
+
+
     render() {
 
 
@@ -113,6 +126,8 @@ class CardList extends React.Component {
         }*/
 
 
+
+
         return (
             <div className={`col-md-${this.props.col}`}>
                 <link
@@ -132,7 +147,7 @@ class CardList extends React.Component {
                                         <CardSubtitle tag="h6" className="mb-2 text-muted">Data eveniment: {event.data_ev.substring(0,10)}</CardSubtitle>
                                     </CardBody>
                                     <img width="100%"
-                                         src="https://archive.mith.umd.edu/engl668k/wp-content/uploads/2013/01/twitter-logo-small.jpg"
+                                         src={`${event.coperta}`}
                                          alt="Card image cap"/>
                                     <CardBody>
                                         <CardText>{event.descriere}</CardText>
@@ -151,9 +166,11 @@ class CardList extends React.Component {
                                                 <Button color='secondary' onClick={this.toggle}>Cancel</Button>
                                             </ModalFooter>
                                         </Modal>
-                                        <CardLink href="#">{event.locatie}</CardLink>
+                                        <CardLink href={`https://www.google.ro/maps/place/${event.locatie}`} target="_blank">{event.locatie}</CardLink>
                                     </CardBody>
-                                    <Button color="info">Participa!</Button>
+                                    <Button color="info" onClick={
+                                        (e) => this.onAddFavoriteEvent(e, event.eventid)
+                                    }>Participa!</Button>
                                     <Button color="primary">Adauga la favorite!</Button>
                                 </Card>
                             )

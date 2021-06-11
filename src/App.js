@@ -7,6 +7,7 @@ import MyEvents from "./Components/MyEvents/MyEvents.js";
 import CurrentSituation from "./Components/CurrentSituation/CurrentSituation.js";
 import SearchEvent from "./Components/SearchEvent/SearchEvent.js";
 import SaveEvents from "./Components/SaveEvents/SaveEvents.js";
+import FavoriteEvents from "./Components/FavoriteEvents/FavoriteEvents.js";
 import CreateEvent from "./Components/CreateEvent/CreateEvent.js";
 import Logo from "./Components/Logo/Logo.js";
 import Particles from "react-particles-js";
@@ -148,14 +149,17 @@ class App extends Component {
                                 {/*<ErrorBoundry>
                                 <MyEvents events={filterEvents}/>
                             </ErrorBoundry>*/}
-                                <CardList col={12}/>
+                                <CardList col={12} userId = {this.state.user.id}/>
                             </Scroll>
 
 
                             <br/>
                             <SaveEvents/>
+                            <br/>
+                            <FavoriteEvents userId = {this.state.user.id}/>
                             <br />
                             <AddInfo userId = {this.state.user.id}/>
+
                         </div>
                         : <div>
                             <h1>MODUL ADIMINISTRATOR</h1>
