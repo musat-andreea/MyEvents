@@ -163,6 +163,9 @@ class App extends Component {
                         </div>
                         : <div>
                             <h1>MODUL ADIMINISTRATOR</h1>
+
+                            <CurrentSituation/>
+
                             <CreateEvent userId={this.state.user.id}/>
                         </div>
                     }

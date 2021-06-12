@@ -96,16 +96,19 @@ class CreateEvent extends React.Component{
 
     };
 
+
+
     render()
     {
         return(
             <div>
-                <Button variant="outline-info" onClick={this.openCreateEventForm}>Creeaza eveniment</Button>
+                <Button variant="outline-info" onClick={
+                    (e) => this.openCreateEventForm(e)}>Creeaza eveniment</Button>
                 <br />
                 <br />
-                <form id = "createEventForm" style={{display: "center"}}>
-                    <div className="form_create_event" >
-                        <Form.Group>
+                <form id = "createEventForm" style={{display: "none"}}>
+                    <div className="form_create_event" style={{display: "center"}} >
+                        <Form.Group style={{display: "center"}}>
                             <p >Titlu:</p>
                             <Form.Control type="text" name = "denumire" id = "denumire" placeholder="Denumire eveniment"  onChange={this.onDenumireChange}/>
                             <br />
@@ -128,7 +131,7 @@ class CreateEvent extends React.Component{
                             <Form.Control type="text" style={{padding: "50px 1px"}} name = "descriere" id = "descriere" placeholder="Maxim 250 de caractere"  onChange={this.onDescriereChange}/>
                             <br />
                             <p style={{display: "block"}}>Numarul de locuri:</p>
-                            <Form.Control type="number" name = "nr_loc" id = "nr_loc" placeholder="Numarul de participanti" style={{display: "block"}} onChange={this.onNumarLocChange}/>
+                            <Form.Control type="number" name = "nr_loc" id = "nr_loc" placeholder="Numar participanti" style={{display: "block"}} onChange={this.onNumarLocChange}/>
                             <br />
                             <p style={{display: "block"}}>Locatia evenimentului:</p>
                             <Form.Control type="text" name = "locatie" id = "locatie" placeholder="Orasul" style={{display: "block"}} onChange={this.onLocatieChange}/>

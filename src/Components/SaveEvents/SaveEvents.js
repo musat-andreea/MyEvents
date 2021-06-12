@@ -1,8 +1,8 @@
 import React from 'react';
-import {Button} from "react-bootstrap";
+
 import {
     Card, CardImg, CardText, CardBody, Modal,
-    CardTitle, CardSubtitle, CardLink,
+    CardTitle, CardSubtitle, CardLink, Button,
     ModalBody, ModalHeader, ModalFooter
 } from 'reactstrap';
 import './SaveEvents.css';
@@ -54,7 +54,7 @@ class SaveEvents extends React.Component{
     {
         return(
             <div>
-                <Button variant="outline-info" className="textColor bgColor" onClick={
+                <Button outline color="info" className="textColor bgColor" onClick={
                     (e) => this.onListSavedEvent(e)} > Evenimente salvate </Button>
                 <br />
                 <br />
@@ -94,6 +94,7 @@ class SaveEvents extends React.Component{
                                                 </Modal>
                                                 <CardLink href={`https://www.google.ro/maps/place/${event.locatie}`} target="_blank">{event.locatie}</CardLink>
                                             </CardBody>
+                                            <Button  color="warning" >Mesaj catre organizator!</Button>
                                         </Card>
                                     )
                                 })
