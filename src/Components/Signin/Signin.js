@@ -1,5 +1,5 @@
 import React from 'react';
-
+import Cookies from 'js-cookie'
 
 class Signin extends React.Component {
 
@@ -32,6 +32,12 @@ class Signin extends React.Component {
             .then(response => response.json())
             .then(user => {
                 if(user.id) {
+                    Cookies.set('userId', user.id);
+                    Cookies.set('name', user.name);
+                    Cookies.set('rol', user.rol);
+                    Cookies.set('email', user.email);
+                    Cookies.set('entries', user.entries);
+                    Cookies.set('joined', user.joined);
                     this.props.loadUser(user);
                     this.props.onRouteChange('home');
                 }

@@ -14,12 +14,20 @@ class CardList extends React.Component {
         this.state = {
             modal: false,
             eventsList: [],
+            currentEventDetails: {
+                durata_ev: '',
+                tip_eveniment: '',
+                tematica: '',
+                nr_locuri: '',
+                eventid: '',
+            }
         };
 
         this.toggle = this.toggle.bind(this);
         this.handleLocationSearchChange = this.handleLocationSearchChange.bind(this);
         this.handleDenumireSearchChange = this.handleDenumireSearchChange.bind(this);
         this.handleMultiFilter = this.handleMultiFilter.bind(this);
+        this.updateCurrentEventDetails = this.updateCurrentEventDetails.bind(this);
     }
 
     handleDenumireSearchChange(event)   {
@@ -76,6 +84,19 @@ class CardList extends React.Component {
         });
     }
 
+    updateCurrentEventDetails(e, eventDetails)    {
+        this.setState({
+            currentEventDetails: {
+                durata_ev: eventDetails.durata_ev,
+                tip_eveniment: eventDetails.tip_eveniment,
+                tematica: eventDetails.tematica,
+                nr_locuri: eventDetails.nr_locuri,
+                eventid: eventDetails.eventid,
+            }
+        });
+        this.toggle()
+    }
+
     componentDidMount() {
         axios.get('http://localhost:3000/getEvents')
             .then((response) => {
@@ -102,6 +123,9 @@ class CardList extends React.Component {
                 eventid: event_id
             })
         })
+            .then((result) => {
+                window.location.reload();
+            })
     };
 
     onAddSavedEvent = (e, event_id) => {
@@ -163,21 +187,7 @@ class CardList extends React.Component {
                                          alt="Card image cap"/>
                                     <CardBody>
                                         <CardText>{event.descriere}</CardText>
-                                        <CardLink href="#" onClick={this.toggle}>Detalii</CardLink>
-                                        <Modal isOpen={this.state.modal} toggle={this.toggle}
-                                               className={this.props.className}>
-                                            <ModalHeader toggle={this.toggle}>Detalii organizatorice</ModalHeader>
-                                            <ModalBody>
-                                                <p>Durata evenimentului: {event.durata_ev} zile</p>
-                                                <p>Tipul evenimentului: {event.tip_eveniment}</p>
-                                                <p>Tematica evenimentului: {event.tematica}</p>
-                                                <p>Numarul de locuori: {event.nr_locuri}</p>
-                                            </ModalBody>
-                                            <ModalFooter>
-                                                <Button color='primary' onClick={this.toggle}>Participa!</Button>{' '}
-                                                <Button color='secondary' onClick={this.toggle}>Cancel</Button>
-                                            </ModalFooter>
-                                        </Modal>
+                                        <CardLink href="#" onClick={(e) => this.updateCurrentEventDetails(e, event)}>Detalii</CardLink>
                                         <CardLink href={`https://www.google.ro/maps/place/${event.locatie}`} target="_blank">{event.locatie}</CardLink>
                                     </CardBody>
                                     <Button color="info" onClick={
@@ -191,6 +201,22 @@ class CardList extends React.Component {
                         })
                     }
                 </Row>
+                <Modal isOpen={this.state.modal} toggle={this.toggle} id={'test'}
+                       className={this.props.className}>
+                    <ModalHeader toggle={this.toggle}>Detalii organizatorice</ModalHeader>
+                    <ModalBody>
+                        <p>Durata evenimentului: {this.state.currentEventDetails.durata_ev} zile</p>
+                        <p>Tipul evenimentului: {this.state.currentEventDetails.tip_eveniment}</p>
+                        <p>Tematica evenimentului: {this.state.currentEventDetails.tematica}</p>
+                        <p>Numarul de locuri: {this.state.currentEventDetails.nr_locuri}</p>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color='primary' onClick={
+                            (e) => this.onAddSavedEvent(e, this.state.currentEventDetails.eventid)
+                        }>Participa!</Button>{' '}
+                        <Button color='secondary' onClick={this.toggle}>Cancel</Button>
+                    </ModalFooter>
+                </Modal>
             </div>
         );
     }

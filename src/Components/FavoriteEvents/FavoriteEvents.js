@@ -1,8 +1,8 @@
 import React from 'react';
-import {Button} from "react-bootstrap";
+
 import {
     Card, CardImg, CardText, CardBody, Modal,
-    CardTitle, CardSubtitle, CardLink,
+    CardTitle, CardSubtitle, CardLink, Button,
     ModalBody, ModalHeader, ModalFooter
 } from 'reactstrap';
 import './FavoriteEvents.css';
@@ -16,10 +16,18 @@ class FavoriteEvents extends React.Component{
         this.state = {
             modal: false,
             eventsList: [],
+            currentEventDetails: {
+                durata_ev: '',
+                tip_eveniment: '',
+                tematica: '',
+                nr_locuri: '',
+                eventid: '',
+            }
         };
 
         this.toggle = this.toggle.bind(this);
         this.onListFavoriteEvent = this.onListFavoriteEvent.bind(this);
+        this.updateCurrentEventDetails = this.updateCurrentEventDetails.bind(this);
     }
 
     toggle() {
@@ -28,20 +36,36 @@ class FavoriteEvents extends React.Component{
         });
     }
 
+    updateCurrentEventDetails(e, eventDetails)    {
+        this.setState({
+            currentEventDetails: {
+                durata_ev: eventDetails.durata_ev,
+                tip_eveniment: eventDetails.tip_eveniment,
+                tematica: eventDetails.tematica,
+                nr_locuri: eventDetails.nr_locuri,
+                eventid: eventDetails.eventid,
+            }
+        });
+        this.toggle()
+    }
+
     componentDidMount() {
-            axios.get(`http://localhost:3000/favoriteList?user_id=${this.props.userId}`)
-                .then((response) => {
-                    console.log("Rezultatul json din BD", response);
-                    let InfoAboutEvents = response.data[0];
+            this.getFavoriteEventsList();
+    }
 
-                    //console.log("InfoAboutE: ", response.data.length);
+    getFavoriteEventsList() {
+        axios.get(`http://localhost:3000/favoriteList?user_id=${this.props.userId}`)
+            .then((response) => {
+                console.log("Rezultatul json din BD", response);
+                let InfoAboutEvents = response.data[0];
 
-                    this.setState({eventsList: response.data});
+                //console.log("InfoAboutE: ", response.data.length);
 
-                    // UNDEFINEDED
-                    console.log("eventsList:", this.state.eventsList)
-                })
+                this.setState({eventsList: response.data});
 
+                // UNDEFINEDED
+                console.log("eventsList:", this.state.eventsList)
+            })
     }
 
     onListFavoriteEvent (event) {
@@ -49,11 +73,37 @@ class FavoriteEvents extends React.Component{
 
     }
 
+    onAddSavedEvent = (e, event_id) => {
+        e.preventDefault();
+        fetch('http://localhost:3000/saved', {
+            method: 'post',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                user_id: this.props.userId,
+                eventid: event_id
+            })
+        })
+            .then((result) => {
+                this.getFavoriteEventsList()
+            })
+    };
+
+    onDeleteFavoriteEvent = (e, event_id) => {
+        e.preventDefault();
+        fetch(`http://localhost:3000/deleteFavoriteEvent?user_id=${this.props.userId}&eventid=${event_id}`, {
+            method: 'delete',
+            headers: {'Content-Type': 'application/json'}
+        })
+            .then((result) =>   {
+                this.getFavoriteEventsList()
+            })
+    };
+
     render()
     {
         return(
             <div>
-                <Button variant="outline-info" className="textColor bgColor" onClick={
+                <Button outline color="info" className="textColor bgColor" onClick={
                     (e) => this.onListFavoriteEvent(e)} > Evenimente preferate </Button>
                 <br />
                 <br />
@@ -77,31 +127,36 @@ class FavoriteEvents extends React.Component{
                                                  alt="Card image cap"/>
                                             <CardBody>
                                                 <CardText>{event.descriere}</CardText>
-                                                <CardLink href="#" onClick={this.toggle}>Detalii</CardLink>
-                                                <Modal isOpen={this.state.modal} toggle={this.toggle}
-                                                       className={this.props.className}>
-                                                    <ModalHeader toggle={this.toggle}>Detalii organizatorice</ModalHeader>
-                                                    <ModalBody>
-                                                        <p>Durata evenimentului: {event.durata_ev} zile</p>
-                                                        <p>Tipul evenimentului: {event.tip_eveniment}</p>
-                                                        <p>Tematica evenimentului: {event.tematica}</p>
-                                                        <p>Numarul de locuori: {event.nr_locuri}</p>
-                                                    </ModalBody>
-                                                    <ModalFooter>
-                                                        <Button color='primary' onClick={this.toggle}>Participa!</Button>{' '}
-                                                        <Button color='secondary' onClick={this.toggle}>Cancel</Button>
-                                                    </ModalFooter>
-                                                </Modal>
+                                                <CardLink href="#" onClick={(e) => this.updateCurrentEventDetails(e, event)}>Detalii</CardLink>
                                                 <CardLink href={`https://www.google.ro/maps/place/${event.locatie}`} target="_blank">{event.locatie}</CardLink>
                                             </CardBody>
                                             <Button color="info" onClick={
-                                                (e) => this.onAddFavoriteEvent(e, event.eventid)
+                                                (e) => this.onAddSavedEvent(e, event.eventid)
                                             }>Participa!</Button>
+                                            <Button color="danger" onClick={
+                                                (e) => this.onDeleteFavoriteEvent(e, event.eventid)
+                                            }>Stergeti evenimentul</Button>
                                         </Card>
                                     )
                                 })
                             }
                         </Row>
+                        <Modal isOpen={this.state.modal} toggle={this.toggle} id={'test'}
+                               className={this.props.className}>
+                            <ModalHeader toggle={this.toggle}>Detalii organizatorice</ModalHeader>
+                            <ModalBody>
+                                <p>Durata evenimentului: {this.state.currentEventDetails.durata_ev} zile</p>
+                                <p>Tipul evenimentului: {this.state.currentEventDetails.tip_eveniment}</p>
+                                <p>Tematica evenimentului: {this.state.currentEventDetails.tematica}</p>
+                                <p>Numarul de locuri: {this.state.currentEventDetails.nr_locuri}</p>
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button color='primary' onClick={
+                                    (e) => this.onAddSavedEvent(e, this.state.currentEventDetails.eventid)
+                                }>Participa!</Button>{' '}
+                                <Button color='secondary' onClick={this.toggle}>Cancel</Button>
+                            </ModalFooter>
+                        </Modal>
                     </div>
                 </div>
             </div>

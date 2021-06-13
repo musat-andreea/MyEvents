@@ -72,14 +72,23 @@ class Register extends React.Component {
                             <div className="mt3">
                                 <label className="db fw6 lh-copy f6" htmlFor="rol">Rol</label>
 
-                                <input
+                                {/*<input
                                     className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                                     type="text"
                                     name="rol"
                                     id="rol"
                                     onChange={this.onRolChange}
-                                />
-                                <h5>*Completeaza cu ORGANIZATOR sau PARTICIPANT</h5>
+                                />*/}
+                                <select
+                                    className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
+                                    type="text"
+                                    name="rol"
+                                    id="rol"
+                                    onChange={this.onRolChange}>
+                                    <option value="ORGANIZATOR" style={{backgroundColor: "pink"}}>ORGANIZATOR</option>
+                                    <option value="PARTICIPANT" style={{backgroundColor: "pink"}}>PARTICIPANT</option>
+                                </select>
+
                             </div>
                             <div className="mt3">
                                 <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>

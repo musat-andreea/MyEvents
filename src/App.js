@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import './App.css';
 import Navigation from "./Components/Navigation/Navigation.js";
 import Signin from "./Components/Signin/Signin.js";
@@ -16,7 +16,9 @@ import AddInfo from "./Components/AddInfo/AddInfo.js";
 import CardList from "./Components/CardList/CardList.js";
 import SearchBox from "./Components/SearchBox.js";
 import ErrorBoundry from "./Components/ErrorBoundry.js";
-import { setSearchField, requestEvents } from "./actions.js";
+import {setSearchField, requestEvents} from "./actions.js";
+import MessageBox from "./Components/MessageBox/MessageBox";
+import Cookies from 'js-cookie'
 
 
 const particleOptions = {
@@ -33,7 +35,7 @@ const particleOptions = {
 
 
 const initialState = {
-    input:'',
+    input: '',
     route: 'signin',
     isSignedIn: false,
     user: {
@@ -68,18 +70,21 @@ class App extends Component {
     }
 
     loadUser = (data) => {
-        this.setState({user: {
-            id: data.id,
-            name: data.name,
-            rol: data.rol,
-            email: data.email,
-            entries: data.entries,
-            joined: data.joined
-        }})
+        this.setState({
+            user: {
+                id: data.id,
+                name: data.name,
+                rol: data.rol,
+                email: data.email,
+                entries: data.entries,
+                joined: data.joined
+            }
+        })
     }
 
     loadEvent = (data) => {
-        this.setState({eveniment: {
+        this.setState({
+            eveniment: {
                 eventid: data.eventid,
                 managerid: data.managerid,
                 denumire: data.denumire,
@@ -91,9 +96,15 @@ class App extends Component {
                 descriere: data.descriere,
                 nr_locuri: data.nr_locuri,
                 locatie: data.locatie
-            }})
+            }
+        })
     }
 
+    componentDidMount() {
+        if (Cookies.get('email'))   {
+            this.onRouteChange('home');
+        }
+    }
     /*
     componentDidMount() {
         fetch('http://localhost:3000')
@@ -104,9 +115,15 @@ class App extends Component {
 
 
     onRouteChange = (route) => {
-        if(route === 'signout'){
+        if (route === 'signout') {
             this.setState(initialState)
-        } else if(route === 'home') {
+            Cookies.remove('userId');
+            Cookies.remove('name');
+            Cookies.remove('rol');
+            Cookies.remove('email');
+            Cookies.remove('entries');
+            Cookies.remove('joined');
+        } else if (route === 'home') {
             this.setState({isSignedIn: true})
         }
 
@@ -114,73 +131,78 @@ class App extends Component {
         this.setState({route: route});
     }
 
-    render()
-  {
-      /*const { searchField, onSearchChange, events, isPending } = this.props;
-      const filterEvents = events.filter(event => {
-          return event.name.toLowerCase().includes(searchField.toLowerCase())
-      })*/
+    render() {
+        /*const { searchField, onSearchChange, events, isPending } = this.props;
+        const filterEvents = events.filter(event => {
+            return event.name.toLowerCase().includes(searchField.toLowerCase())
+        })*/
 
-    return (
-        <div className="App">
+        return (
+            <div className="App">
 
 
-            <Particles className="particles"
-                params={particleOptions}/>
-          <Navigation isSignedIn={this.state.isSignedIn} onRouteChange={this.onRouteChange} />
+                <Particles className="particles"
+                           params={particleOptions}/>
+                <Navigation isSignedIn={this.state.isSignedIn} onRouteChange={this.onRouteChange}/>
 
-            { this.state.route === 'home'
-                ? <div>
-                    <Logo />
-                    {/*
+                {this.state.route === 'home'
+                    ? <div>
+                        <Logo/>
+                        {/*
                     */}
-                    {/*
+                        {/*
                     */}
 
-                    {console.log("AICI AM:", this.state.user.rol)}
-                    {
-                        this.state.user.rol === 'PARTICIPANT'
+                        {console.log("AICI AM:", this.state.user.rol)}
+                        {
+                            Cookies.get('rol') === 'PARTICIPANT'
 
-                        ? <div>
-                            <CurrentSituation/>
-                            {/*<SearchBox searchChange={onSearchChange} />*/}
+                                ? <div>
+                                    <CurrentSituation/>
+                                    {/*<SearchBox searchChange={onSearchChange} />*/}
 
-                            <Scroll>
-                                {/*<ErrorBoundry>
+                                    <Scroll>
+                                        {/*<ErrorBoundry>
                                 <MyEvents events={filterEvents}/>
                             </ErrorBoundry>*/}
-                                <CardList col={12} userId = {this.state.user.id}/>
-                            </Scroll>
+                                        <CardList col={12} userId={this.state.user.id}/>
+                                    </Scroll>
 
 
-                            <br/>
-                            <SaveEvents userId = {this.state.user.id}/>
-                            <br/>
-                            <FavoriteEvents userId = {this.state.user.id}/>
-                            <br />
-                            <AddInfo userId = {this.state.user.id}/>
+                                    <br/>
+                                    <SaveEvents userId={this.state.user.id}/>
+                                    <br/>
+                                    <FavoriteEvents userId={this.state.user.id}/>
+                                    <br/>
+                                    <AddInfo userId={this.state.user.id}/>
 
-                        </div>
-                        : <div>
-                            <h1>MODUL ADIMINISTRATOR</h1>
+                                </div>
+                                : <div>
+                                    <h1>MODUL ADIMINISTRATOR</h1>
 
-                            <CurrentSituation/>
+                                    <CurrentSituation/>
 
-                            <CreateEvent userId={this.state.user.id}/>
-                        </div>
-                    }
+                                    <br/>
+                                    <h1>MESAJELE PRIMITE</h1>
+                                    <MessageBox direction={"manager_to_participant"} loggedUser={this.state.user.id}
+                                                eventManagerId={this.state.user.id} participantId={24}></MessageBox>
+                                    <br/>
+                                    <br/>
+                                    <CreateEvent userId={this.state.user.id}/>
+                                </div>
+                        }
 
-                </div>
-                : (
-                    this.state.route === 'signin'
-                    ? <Signin loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
-                    : <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
-                )
-            }
+                    </div>
+                    : (
+                        this.state.route === 'signin'
+                            ? <Signin loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
+                            : <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
+                    )
+                }
 
-        </div>
-    );
-  }
+            </div>
+        );
+    }
 }
 
 export default App;
