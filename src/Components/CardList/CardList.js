@@ -7,6 +7,7 @@ import {
 import axios from 'axios';
 import Row from "react-bootstrap/Row";
 import SearchEvent from "../SearchEvent/SearchEvent";
+import Cookies from 'js-cookie'
 
 class CardList extends React.Component {
     constructor(props) {
@@ -119,7 +120,7 @@ class CardList extends React.Component {
             method: 'post',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-                user_id: this.props.userId,
+                user_id: Cookies.get('userId'),
                 eventid: event_id
             })
         })
@@ -134,7 +135,7 @@ class CardList extends React.Component {
             method: 'post',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-                user_id: this.props.userId,
+                user_id: Cookies.get('userId'),
                 eventid: event_id
             })
         })

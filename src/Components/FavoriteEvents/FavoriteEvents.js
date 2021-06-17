@@ -8,6 +8,7 @@ import {
 import './FavoriteEvents.css';
 import axios from 'axios';
 import Row from "react-bootstrap/Row";
+import Cookies from 'js-cookie'
 
 class FavoriteEvents extends React.Component{
 
@@ -54,7 +55,7 @@ class FavoriteEvents extends React.Component{
     }
 
     getFavoriteEventsList() {
-        axios.get(`http://localhost:3000/favoriteList?user_id=${this.props.userId}`)
+        axios.get(`http://localhost:3000/favoriteList?user_id=${Cookies.get('userId')}`)
             .then((response) => {
                 console.log("Rezultatul json din BD", response);
                 let InfoAboutEvents = response.data[0];
@@ -79,7 +80,7 @@ class FavoriteEvents extends React.Component{
             method: 'post',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-                user_id: this.props.userId,
+                user_id: Cookies.get('userId'),
                 eventid: event_id
             })
         })
@@ -90,7 +91,7 @@ class FavoriteEvents extends React.Component{
 
     onDeleteFavoriteEvent = (e, event_id) => {
         e.preventDefault();
-        fetch(`http://localhost:3000/deleteFavoriteEvent?user_id=${this.props.userId}&eventid=${event_id}`, {
+        fetch(`http://localhost:3000/deleteFavoriteEvent?user_id=${Cookies.get('userId')}&eventid=${event_id}`, {
             method: 'delete',
             headers: {'Content-Type': 'application/json'}
         })

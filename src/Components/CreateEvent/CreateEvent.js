@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Form } from 'react-bootstrap';
 import './CreateEvent.css';
+import Cookies from 'js-cookie'
 
 class CreateEvent extends React.Component{
 
@@ -78,7 +79,7 @@ class CreateEvent extends React.Component{
             method: 'post',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-                user_id: this.props.userId,
+                user_id: Cookies.get('userId'),
                 denumire: this.state.denumire,
                 data: this.state.data,
                 durata: this.state.durata,

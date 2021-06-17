@@ -9,6 +9,7 @@ import './SaveEvents.css';
 import axios from 'axios';
 import Row from "react-bootstrap/Row";
 import MessageBox from "../MessageBox/MessageBox";
+import Cookies from 'js-cookie'
 
 class SaveEvents extends React.Component {
 
@@ -53,7 +54,12 @@ class SaveEvents extends React.Component {
     }
 
     componentDidMount() {
-        axios.get(`http://localhost:3000/savedList?user_id=${this.props.userId}`)
+       this.getSaveEventsList();
+
+    }
+
+    getSaveEventsList() {
+        axios.get(`http://localhost:3000/savedList?user_id=${Cookies.get('userId')}`)
             .then((response) => {
                 console.log("Rezultatul json din BD", response);
                 let InfoAboutEvents = response.data[0];
@@ -65,7 +71,6 @@ class SaveEvents extends React.Component {
                 // UNDEFINEDED
                 console.log("eventsList:", this.state.eventsList)
             })
-
     }
 
     onListSavedEvent(event) {
@@ -77,10 +82,21 @@ class SaveEvents extends React.Component {
         this.setState(
             {
                 messageBox:
-                <MessageBox direction={'participant_to_manager'} loggedUser={this.props.userId} eventManagerId={eventManagerId} participantId={this.props.userId}></MessageBox>
+                <MessageBox direction={'participant_to_manager'} loggedUser={Cookies.get('userId')} eventManagerId={eventManagerId} participantId={Cookies.get('userId')}></MessageBox>
             }
         );
-    }
+    };
+
+    onDeleteSaveEvent = (e, event_id) => {
+        e.preventDefault();
+        fetch(`http://localhost:3000/deleteSavedEvent?user_id=${Cookies.get('userId')}&eventid=${event_id}`, {
+            method: 'delete',
+            headers: {'Content-Type': 'application/json'}
+        })
+            .then((result) =>   {
+                this.getSaveEventsList()
+            })
+    };
 
     render() {
         return (
@@ -116,7 +132,9 @@ class SaveEvents extends React.Component {
                                             </CardBody>
                                             <Button color="warning" onClick={(e) => this.handleSendMessage(e, event.managerid)}>
                                                 Mesaj catre organizator!</Button>
-                                            <Button color="danger">Stergeti evenimentul</Button>
+                                            <Button color="danger" onClick={
+                                                (e) => this.onDeleteSaveEvent(e, event.eventid)
+                                            }>Stergeti evenimentul</Button>
                                         </Card>
                                     )
                                 })

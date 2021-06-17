@@ -8,6 +8,7 @@ import CurrentSituation from "./Components/CurrentSituation/CurrentSituation.js"
 import SearchEvent from "./Components/SearchEvent/SearchEvent.js";
 import SaveEvents from "./Components/SaveEvents/SaveEvents.js";
 import FavoriteEvents from "./Components/FavoriteEvents/FavoriteEvents.js";
+import ParticipantsList from "./Components/ParticipantsList/ParticipantsList.js";
 import CreateEvent from "./Components/CreateEvent/CreateEvent.js";
 import Logo from "./Components/Logo/Logo.js";
 import Particles from "react-particles-js";

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Form } from 'react-bootstrap';
+import Cookies from 'js-cookie'
 
 class AddInfo extends React.Component{
 
@@ -33,7 +34,7 @@ class AddInfo extends React.Component{
             method: 'post',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-                userid: this.props.userId,
+                userid: Cookies.get('userId'),
                 interese: this.state.interese,
                 varsta: this.state.varsta
             })
