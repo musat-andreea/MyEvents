@@ -78,11 +78,11 @@ class SaveEvents extends React.Component {
 
     }
 
-    handleSendMessage(e, eventManagerId) {
+    handleSendMessage(e, eventManagerId, eventId) {
         this.setState(
             {
                 messageBox:
-                <MessageBox direction={'participant_to_manager'} loggedUser={Cookies.get('userId')} eventManagerId={eventManagerId} participantId={Cookies.get('userId')}></MessageBox>
+                <MessageBox direction={'participant_to_manager'} loggedUser={Cookies.get('userId')} eventManagerId={eventManagerId} participantId={Cookies.get('userId')} eventId={eventId}></MessageBox>
             }
         );
     };
@@ -130,7 +130,7 @@ class SaveEvents extends React.Component {
                                                 <CardLink href={`https://www.google.ro/maps/place/${event.locatie}`}
                                                           target="_blank">{event.locatie}</CardLink>
                                             </CardBody>
-                                            <Button color="warning" onClick={(e) => this.handleSendMessage(e, event.managerid)}>
+                                            <Button color="warning" onClick={(e) => this.handleSendMessage(e, event.managerid, event.eventid)}>
                                                 Mesaj catre organizator!</Button>
                                             <Button color="danger" onClick={
                                                 (e) => this.onDeleteSaveEvent(e, event.eventid)

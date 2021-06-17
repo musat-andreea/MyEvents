@@ -1,6 +1,8 @@
 import React from 'react';
 import Select from 'react-select';
 import axios from "axios";
+import CovidFutureCasesChecker from "../SearchEvent/CovidFutureCasesChecker";
+import Row from "react-bootstrap/Row";
 
 
 class CurrentSituation extends React.Component {
@@ -12,7 +14,9 @@ class CurrentSituation extends React.Component {
             selected_county_total_cases: 0,
             county_info: {},
             rate: {},
-            selected_rate: 0
+            selected_rate: 0,
+            selectedCounty: '',
+            county_population: -1,
         }
 
         this.handleChangeEvent = this.handleChangeEvent.bind(this);
@@ -63,8 +67,8 @@ class CurrentSituation extends React.Component {
                 this.setState({
                     options: options,
                     county_info: county_info,
-                    rate: rate
-
+                    rate: rate,
+                    county_population:  response.data[0].county_data[0].county_population
                 });
             });
     }
@@ -77,7 +81,8 @@ class CurrentSituation extends React.Component {
         });
 
         this.setState({
-            selected_rate: this.state.rate[event.value]
+            selected_rate: this.state.rate[event.value],
+            selectedCounty: event.value,
         });
 
 
@@ -114,6 +119,15 @@ class CurrentSituation extends React.Component {
                             )
                     }
                 </div>
+
+                {
+                    this.state.selectedCounty
+                    ?<CovidFutureCasesChecker locatie={this.state.selectedCounty} countyPopulation={this.state.county_population}/>
+                    :(
+                        ''
+                      )
+                }
+
             </div>
         );
     }

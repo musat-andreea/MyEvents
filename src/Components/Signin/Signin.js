@@ -29,17 +29,24 @@ class Signin extends React.Component {
                 password: this.state.signInPassword
             })
         })
-            .then(response => response.json())
-            .then(user => {
-                if(user.id) {
-                    Cookies.set('userId', user.id);
-                    Cookies.set('name', user.name);
-                    Cookies.set('rol', user.rol);
-                    Cookies.set('email', user.email);
-                    Cookies.set('entries', user.entries);
-                    Cookies.set('joined', user.joined);
-                    this.props.loadUser(user);
-                    this.props.onRouteChange('home');
+            .then(response => {
+                if (response.status === 200) {
+                    response.json().then((user) => {
+                        if(user.id) {
+                            Cookies.set('userId', user.id);
+                            Cookies.set('name', user.name);
+                            Cookies.set('rol', user.rol);
+                            Cookies.set('email', user.email);
+                            Cookies.set('entries', user.entries);
+                            Cookies.set('joined', user.joined);
+                            this.props.loadUser(user);
+                            this.props.onRouteChange('home');
+                        }
+                    })
+
+                }
+                else if (response.status === 401)    {
+                    alert('Username or password is not correct');
                 }
             })
 

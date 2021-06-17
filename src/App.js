@@ -184,9 +184,10 @@ class App extends Component {
                                     <CurrentSituation/>
 
                                     <br/>
+                                    <h2> Evenimentele tale </h2>
+                                    <CardList col={12} userId={this.state.user.id}/>
+
                                     <h1>MESAJELE PRIMITE</h1>
-                                    <MessageBox direction={"manager_to_participant"} loggedUser={this.state.user.id}
-                                                eventManagerId={this.state.user.id} participantId={24}></MessageBox>
                                     <br/>
                                     <br/>
                                     <CreateEvent userId={this.state.user.id}/>

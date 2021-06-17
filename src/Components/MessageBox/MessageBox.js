@@ -39,6 +39,7 @@ class MessageBox extends React.Component {
             body: JSON.stringify({
                 participantId: this.props.participantId,
                 managerId: this.props.eventManagerId,
+                eventId: this.props.eventId,
                 message: document.getElementById("mesaj").value,
                 direction: this.props.direction,
             })
