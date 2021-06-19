@@ -89,13 +89,15 @@ class SaveEvents extends React.Component {
 
     onDeleteSaveEvent = (e, event_id) => {
         e.preventDefault();
-        fetch(`http://localhost:3000/deleteSavedEvent?user_id=${Cookies.get('userId')}&eventid=${event_id}`, {
-            method: 'delete',
-            headers: {'Content-Type': 'application/json'}
-        })
-            .then((result) =>   {
-                this.getSaveEventsList()
+        if (window.confirm("Daca stergeti nu veti mai fi notificat in legatura cu acest eveniment. Doriti sa continuati?")) {
+            fetch(`http://localhost:3000/deleteSavedEvent?user_id=${Cookies.get('userId')}&eventid=${event_id}`, {
+                method: 'delete',
+                headers: {'Content-Type': 'application/json'}
             })
+                .then((result) => {
+                    this.getSaveEventsList()
+                })
+        }
     };
 
     render() {

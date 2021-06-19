@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {
     Card, CardImg, CardText, CardBody, Modal,
     CardTitle, CardSubtitle, Button, CardLink,
-    ModalBody, ModalHeader, ModalFooter, CardFooter, Table
+    ModalBody, ModalHeader, ModalFooter, CardFooter, Table, Form, FormGroup, Col, Input
 } from 'reactstrap';
 import axios from 'axios';
 import Row from "react-bootstrap/Row";
@@ -10,12 +10,14 @@ import SearchEvent from "../SearchEvent/SearchEvent";
 import Cookies from 'js-cookie'
 import CovidFutureCasesChecker from "../SearchEvent/CovidFutureCasesChecker";
 import MessageBox from "../MessageBox/MessageBox";
+import EditEventForm from "../SaveEvents/EditEventForm";
 
 class CardList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             modal: false,
+            editModal: false,
             eventsList: [],
             currentEventDetails: {
                 durata_ev: '',
@@ -31,13 +33,16 @@ class CardList extends React.Component {
         };
 
         this.toggle = this.toggle.bind(this);
+        this.toggleEditModal = this.toggleEditModal.bind(this);
         this.handleLocationSearchChange = this.handleLocationSearchChange.bind(this);
         this.handleDenumireSearchChange = this.handleDenumireSearchChange.bind(this);
         this.handleMultiFilter = this.handleMultiFilter.bind(this);
         this.updateCurrentEventDetails = this.updateCurrentEventDetails.bind(this);
         this.displayParticipantsList = this.displayParticipantsList.bind(this);
         this.viewMessages = this.viewMessages.bind(this);
+        this.openEditModal = this.openEditModal.bind(this);
     }
+
 
     handleDenumireSearchChange(event) {
 
@@ -88,6 +93,11 @@ class CardList extends React.Component {
         this.toggle()
     }
 
+    openEditModal(e, event) {
+        this.updateCurrentEventDetails(e, event);
+        this.toggleEditModal()
+    }
+
     viewMessages(e, event) {
         axios.get(`http://localhost:3000/getMessages?eventId=${event.eventid}`)
             .then((response) => {
@@ -123,9 +133,20 @@ class CardList extends React.Component {
         });
     }
 
+    toggleEditModal() {
+        this.setState({
+            editModal: !this.state.editModal
+        });
+    }
+
     updateCurrentEventDetails(e, eventDetails) {
         this.setState({
             currentEventDetails: {
+                denumire: eventDetails.denumire,
+                data_ev: eventDetails.data_ev,
+                coperta: eventDetails.coperta,
+                descriere: eventDetails.descriere,
+                locatie: eventDetails.locatie,
                 durata_ev: eventDetails.durata_ev,
                 tip_eveniment: eventDetails.tip_eveniment,
                 tematica: eventDetails.tematica,
@@ -134,6 +155,24 @@ class CardList extends React.Component {
             }
         });
         this.toggle()
+    }
+
+    updateCurrentEventDetailsForEditModal(e, eventDetails) {
+        this.setState({
+            currentEventDetails: {
+                denumire: eventDetails.denumire,
+                data_ev: eventDetails.data_ev,
+                coperta: eventDetails.coperta,
+                descriere: eventDetails.descriere,
+                locatie: eventDetails.locatie,
+                durata_ev: eventDetails.durata_ev,
+                tip_eveniment: eventDetails.tip_eveniment,
+                tematica: eventDetails.tematica,
+                nr_locuri: eventDetails.nr_locuri,
+                eventid: eventDetails.eventid,
+            }
+        });
+        this.toggleEditModal()
     }
 
     componentDidMount() {
@@ -271,6 +310,9 @@ class CardList extends React.Component {
                                             )
                                             : (
                                                 <div style={{width: '100%'}}>
+                                                    <Button color="warning" style={{width: '100%'}} onClick={
+                                                        (e) => this.updateCurrentEventDetailsForEditModal(e, event)
+                                                    }>Editeaza eveniment</Button>
                                                     <Button color="info" style={{width: '100%'}} onClick={
                                                         (e) => this.displayParticipantsList(e, event)
                                                     }>Lista participanti</Button>
@@ -285,6 +327,7 @@ class CardList extends React.Component {
                         })
                     }
                 </Row>
+
                 <Modal isOpen={this.state.modal} toggle={this.toggle} id={'test'}
                        className={this.props.className}
                         size = "lg">
@@ -377,6 +420,21 @@ class CardList extends React.Component {
                                     <Button color='secondary' onClick={this.toggle}>Cancel</Button>
                                 )
                         }
+                    </ModalFooter>
+                </Modal>
+
+
+
+
+                <Modal isOpen={this.state.editModal} toggle={this.toggleEditModal} id={'editModal'}
+                       className={this.props.className}
+                       size = "lg">
+                    <ModalHeader toggle={this.toggle}>Editeaza eveniment</ModalHeader>
+                    <ModalBody>
+                        <EditEventForm colSize={12} editedEvent={this.state.currentEventDetails}/>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color='secondary' onClick={this.toggleEditModal}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
             </div>
