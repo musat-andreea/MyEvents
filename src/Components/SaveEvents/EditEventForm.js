@@ -10,6 +10,7 @@ import axios from 'axios';
 import Row from "react-bootstrap/Row";
 import MessageBox from "../MessageBox/MessageBox";
 import Cookies from 'js-cookie'
+import notifications from "../../helpers";
 
 class EditEventForm extends React.Component {
 
@@ -37,6 +38,14 @@ class EditEventForm extends React.Component {
         })
             .then(response => {
                 if (response.status == 200) {
+                    this.props.participantsList.forEach((participant) => {
+                        notifications.sendMailNotification(
+                            participant.email,
+                            "Modificare eveniment",
+                            `Salutare ${participant.name}, evenimentul ${document.getElementById('edit_denumire').value} a suferit o modificare. Te rugam sa verifici informatiile actualizate!`
+                        )
+                    });
+
                     alert("Evenimentul a fost updatat cu succes");
                     window.location.reload();
                 }

@@ -1,16 +1,26 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {
-    Card, CardImg, CardText, CardBody, Modal,
-    CardTitle, CardSubtitle, Button, CardLink,
-    ModalBody, ModalHeader, ModalFooter, CardFooter, Table, Form, FormGroup, Col, Input
+    Button,
+    Card,
+    CardBody,
+    CardLink,
+    CardSubtitle,
+    CardText,
+    CardTitle,
+    Modal,
+    ModalBody,
+    ModalFooter,
+    ModalHeader,
+    Table
 } from 'reactstrap';
 import axios from 'axios';
 import Row from "react-bootstrap/Row";
 import SearchEvent from "../SearchEvent/SearchEvent";
 import Cookies from 'js-cookie'
-import CovidFutureCasesChecker from "../SearchEvent/CovidFutureCasesChecker";
 import MessageBox from "../MessageBox/MessageBox";
 import EditEventForm from "../SaveEvents/EditEventForm";
+import apiConfig from "../../apiConfig";
+import notifications from "../../helpers";
 
 class CardList extends React.Component {
     constructor(props) {
@@ -45,43 +55,79 @@ class CardList extends React.Component {
 
 
     handleDenumireSearchChange(event) {
+        if (Cookies.get('rol') == 'ORGANIZATOR') {
+            axios.get(`http://localhost:3000/getEvents?managerId=${Cookies.get('userId')}&denumire=${event.target.value}`)
+                .then((response) => {
+                    console.log("Rezultatul json din BD", response);
+                    let InfoAboutEvents = response.data[0];
 
-        axios.get(`http://localhost:3000/getEvents?denumire=${event.target.value}`)
-            .then((response) => {
-                console.log("Rezultatul json din BD", response);
-                let InfoAboutEvents = response.data[0];
+                    //console.log("InfoAboutE: ", response.data.length);
 
-                //console.log("InfoAboutE: ", response.data.length);
+                    this.setState({
+                        eventsList: response.data,
+                        selectedLocation: event.target.value,
+                    });
 
-                this.setState({eventsList: response.data});
 
-                // UNDEFINEDED
-                console.log("eventsList:", this.state.eventsList)
-            })
+                    // UNDEFINEDED
+                    console.log("eventsList:", this.state.eventsList)
+                })
+        } else {
+            axios.get(`http://localhost:3000/getEvents?denumire=${event.target.value}`)
+                .then((response) => {
+                    console.log("Rezultatul json din BD", response);
+                    let InfoAboutEvents = response.data[0];
+
+                    //console.log("InfoAboutE: ", response.data.length);
+
+                    this.setState({eventsList: response.data});
+
+                    // UNDEFINEDED
+                    console.log("eventsList:", this.state.eventsList)
+                })
+        }
     }
 
     handleLocationSearchChange(event) {
+        if (Cookies.get('rol') == 'ORGANIZATOR') {
+            axios.get(`http://localhost:3000/getEvents?managerId=${Cookies.get('userId')}&locatie=${event.target.value}`)
+                .then((response) => {
+                    console.log("Rezultatul json din BD", response);
+                    let InfoAboutEvents = response.data[0];
 
-        axios.get(`http://localhost:3000/getEvents?locatie=${event.target.value}`)
-            .then((response) => {
-                console.log("Rezultatul json din BD", response);
-                let InfoAboutEvents = response.data[0];
+                    //console.log("InfoAboutE: ", response.data.length);
 
-                //console.log("InfoAboutE: ", response.data.length);
-
-                this.setState({
-                    eventsList: response.data,
-                    selectedLocation: event.target.value,
-                });
+                    this.setState({
+                        eventsList: response.data,
+                        selectedLocation: event.target.value,
+                    });
 
 
-                // UNDEFINEDED
-                console.log("eventsList:", this.state.eventsList)
-            })
+                    // UNDEFINEDED
+                    console.log("eventsList:", this.state.eventsList)
+                })
+        } else {
+            axios.get(`http://localhost:3000/getEvents?locatie=${event.target.value}`)
+                .then((response) => {
+                    console.log("Rezultatul json din BD", response);
+                    let InfoAboutEvents = response.data[0];
+
+                    //console.log("InfoAboutE: ", response.data.length);
+
+                    this.setState({
+                        eventsList: response.data,
+                        selectedLocation: event.target.value,
+                    });
+
+
+                    // UNDEFINEDED
+                    console.log("eventsList:", this.state.eventsList)
+                })
+        }
     }
 
-    displayParticipantsList(e, event) {
-        axios.get(`http://localhost:3000/eventsParticipants?managerId=${event.managerid}&eventId=${event.eventid}`)
+    setParticipantsList(managerId, eventId) {
+        axios.get(`http://localhost:3000/eventsParticipants?managerId=${managerId}&eventId=${eventId}`)
             .then((response) => {
                 this.setState({
                     participantsList: response.data
@@ -89,6 +135,9 @@ class CardList extends React.Component {
 
                 console.log("participantsList:", this.state.participantsList)
             })
+    }
+    displayParticipantsList(e, event) {
+        this.setParticipantsList(event.managerid, event.eventid);
         this.updateCurrentEventDetails(e, event);
         this.toggle()
     }
@@ -112,18 +161,33 @@ class CardList extends React.Component {
     }
 
     handleMultiFilter(event) {
-        axios.get(`http://localhost:3000/getEvents?locatie=${document.getElementById('locatie').value}&denumire=${document.getElementById('denumire').value}`)
-            .then((response) => {
-                console.log("Rezultatul json din BD", response);
-                let InfoAboutEvents = response.data[0];
+        if (Cookies.get('rol') == 'ORGANIZATOR') {
+            axios.get(`http://localhost:3000/getEvents?managerId&${Cookies.get('userId')}&locatie=${document.getElementById('locatie').value}&denumire=${document.getElementById('denumire').value}`)
+                .then((response) => {
+                    console.log("Rezultatul json din BD", response);
+                    let InfoAboutEvents = response.data[0];
 
-                //console.log("InfoAboutE: ", response.data.length);
+                    //console.log("InfoAboutE: ", response.data.length);
 
-                this.setState({eventsList: response.data});
+                    this.setState({eventsList: response.data});
 
-                // UNDEFINEDED
-                console.log("eventsList:", this.state.eventsList)
-            })
+                    // UNDEFINEDED
+                    console.log("eventsList:", this.state.eventsList)
+                })
+        } else {
+            axios  .get(`http://localhost:3000/getEvents?locatie=${document.getElementById('locatie').value}&denumire=${document.getElementById('denumire').value}`)
+                .then((response) => {
+                    console.log("Rezultatul json din BD", response);
+                    let InfoAboutEvents = response.data[0];
+
+                    //console.log("InfoAboutE: ", response.data.length);
+
+                    this.setState({eventsList: response.data});
+
+                    // UNDEFINEDED
+                    console.log("eventsList:", this.state.eventsList)
+                })
+        }
     }
 
 
@@ -134,6 +198,7 @@ class CardList extends React.Component {
     }
 
     toggleEditModal() {
+
         this.setState({
             editModal: !this.state.editModal
         });
@@ -158,6 +223,7 @@ class CardList extends React.Component {
     }
 
     updateCurrentEventDetailsForEditModal(e, eventDetails) {
+        this.setParticipantsList(eventDetails.managerid, eventDetails.eventid);
         this.setState({
             currentEventDetails: {
                 denumire: eventDetails.denumire,
@@ -189,6 +255,11 @@ class CardList extends React.Component {
                     // UNDEFINEDED
                     console.log("eventsList:", this.state.eventsList)
                 })
+                .then((result) => {
+                    this.state.eventsList.map((event) => {
+                        this.setPredictedScenarioInformation(event);
+                    });
+                })
         } else {
             axios.get(`http://localhost:3000/getEvents?managerId=${Cookies.get('userId')}`)
                 .then((response) => {
@@ -198,9 +269,11 @@ class CardList extends React.Component {
                     //console.log("InfoAboutE: ", response.data.length);
 
                     this.setState({eventsList: response.data});
-
-                    // UNDEFINEDED
-                    console.log("eventsList:", this.state.eventsList)
+                })
+                .then((result) => {
+                    this.state.eventsList.map((event) => {
+                        this.setPredictedScenarioInformation(event);
+                    });
                 })
         }
 
@@ -237,10 +310,104 @@ class CardList extends React.Component {
         this.setState(
             {
                 messageBox:
-                    <MessageBox direction={'manager_to_participant'} loggedUser={Cookies.get('userId')} eventManagerId={Cookies.get('userId')} participantId={participantId} eventId={eventId}></MessageBox>
+                    <MessageBox direction={'manager_to_participant'} loggedUser={Cookies.get('userId')}
+                                eventManagerId={Cookies.get('userId')} participantId={participantId}
+                                eventId={eventId}></MessageBox>
             }
         );
     };
+
+    calculateScenarioFromRate(lastRate) {
+        let scenario;
+
+        if (lastRate < 1.5) {
+            scenario = 'VERDE';
+        } else if (lastRate > 3) {
+            scenario = 'ROSU';
+        } else {
+            scenario = 'GALBEN';
+        }
+
+        return scenario;
+    }
+
+    setPredictedScenarioInformation(eventDetails) {
+        let data, totalPredictedDays, lastDayCases, beforeLastDayCases, newCasesLastDay, lastRate, scenario;
+        let event_id = eventDetails.eventid;
+
+        axios.get(`${apiConfig.covidMlBaseUrl}/predict/cases_until?county=${eventDetails.judet}&until_future_date=${eventDetails.data_ev.split('T')[0]}`)
+            .then((response) => {
+                if (response.status === 200) {
+                    data = response.data;
+                    totalPredictedDays = data.total_days;
+                    lastDayCases = data.cases[totalPredictedDays - 1];
+                    beforeLastDayCases = data.cases[totalPredictedDays - 2];
+
+                    newCasesLastDay = lastDayCases - beforeLastDayCases;
+
+                    lastRate = (newCasesLastDay / 500000) * 1000;
+
+                    scenario = this.calculateScenarioFromRate(lastRate);
+
+                    if (!this.state.hasOwnProperty(event_id)) {
+                        this.setState({
+                            [event_id]: {
+                                predictedDate: eventDetails.data_ev.split('T')[0],
+                                predictedCases: data.cases[totalPredictedDays - 1],
+                                predictedInfectionRate: lastRate,
+                                predictedScenario: scenario
+                            }
+                        })
+                    }
+                }
+            })
+            .catch((response) => {
+                if (response.status === 400)   {
+                    console.log(response.data.error);
+                }
+            })
+    }
+
+    getCountyScenario(county) {
+        let county_rate = JSON.parse(Cookies.get('current_infection_rate'))[county];
+
+        return this.calculateScenarioFromRate(county_rate);
+    }
+
+    calculateTotalSeatsAndScenario(event_id, maximumSeatsNormalSituation, county) {
+        let scenario = this.getCountyScenario(county);
+
+        if (scenario === 'VERDE') {
+            return 0.7 * maximumSeatsNormalSituation;
+        }
+
+        if (scenario === 'ROSU') {
+            return 0.3 * maximumSeatsNormalSituation;
+        }
+
+        if (scenario === 'GALBEN') {
+            return 0.5 * maximumSeatsNormalSituation;
+        }
+    }
+
+    calculateTotalSeatsInPredictedScenario(maximumSeatsNormalSituation, event_id) {
+        if (this.state.hasOwnProperty(event_id)) {
+            if (this.state[event_id].predictedScenario === 'VERDE') {
+                return 0.7 * maximumSeatsNormalSituation;
+            }
+
+            if (this.state[event_id].predictedScenario === 'ROSU') {
+                return 0.3 * maximumSeatsNormalSituation;
+            }
+
+            if (this.state[event_id].predictedScenario === 'GALBEN') {
+                return 0.5 * maximumSeatsNormalSituation;
+            }
+        }
+
+        return maximumSeatsNormalSituation;
+    }
+
 
     render() {
 
@@ -276,7 +443,25 @@ class CardList extends React.Component {
                 </Row>
                 <Row>
                     {
+
                         this.state.eventsList.map((event) => {
+                            let judet = event.judet;
+                            let predictedScenario = 'Nedefinit';
+
+                            if (this.state.hasOwnProperty(event.eventid))   {
+                                predictedScenario = this.state[event.eventid].predictedScenario;
+                            }
+
+                            let currentScenarioSeats =  this.calculateTotalSeatsAndScenario(event.eventid, event.nr_locuri, judet);
+                            let predictedScenarioSeats = this.calculateTotalSeatsInPredictedScenario(event.nr_locuri, event.eventid);
+
+                            if (currentScenarioSeats != predictedScenarioSeats && predictedScenarioSeats != event.nr_locuri) {
+                                notifications.sendMailNotification(
+                                    event.email,
+                                    "Posibila schimbare in situatia epidemiologica",
+                                    `Buna ziua, evenimentul ${event.denumire} este posibil sa fie impactat de situatia epidemiologica. Numarul de locuri permis acum este: ${currentScenarioSeats} si va deveni ${predictedScenarioSeats}`
+                                );
+                            }
                             return (
                                 <Card className={'col-md-3'}>
                                     <CardBody>
@@ -293,6 +478,17 @@ class CardList extends React.Component {
                                                   onClick={(e) => this.updateCurrentEventDetails(e, event)}>Detalii</CardLink>
                                         <CardLink href={`https://www.google.ro/maps/place/${event.locatie}`}
                                                   target="_blank">{event.locatie}</CardLink>
+
+                                        <CardText id={`${event.eventid}_current_scenario_in_county`}> Scenariu
+                                            curent: {this.getCountyScenario(event.judet)}</CardText>
+                                        <CardText id={`${event.eventid}_predicted_scenario_in_county`}> Scenariu
+                                            prezis: {predictedScenario}
+                                        </CardText>
+                                        <CardText>Numar de locuri in situatia normala: {event.nr_locuri}</CardText>
+                                        <CardText>Numar de locuri in scenariul
+                                            curent: {currentScenarioSeats}</CardText>
+                                        <CardText>Numar de locuri in scenariul
+                                            prezis: {predictedScenarioSeats}</CardText>
                                     </CardBody>
                                     {
                                         Cookies.get('rol') === 'PARTICIPANT'
@@ -330,7 +526,7 @@ class CardList extends React.Component {
 
                 <Modal isOpen={this.state.modal} toggle={this.toggle} id={'test'}
                        className={this.props.className}
-                        size = "lg">
+                       size="lg">
                     <ModalHeader toggle={this.toggle}>Detalii organizatorice</ModalHeader>
                     <ModalBody>
                         <p>Durata evenimentului: {this.state.currentEventDetails.durata_ev} zile</p>
@@ -388,7 +584,8 @@ class CardList extends React.Component {
                                                             <td>{eventMessages.participant_id}</td>
                                                             <td>{eventMessages.message}</td>
                                                             <td>{eventMessages.date}</td>
-                                                            <td><Button color="warning" onClick={(e) => this.handleSendMessage(e, eventMessages.participant_id, eventMessages.event_id)}>
+                                                            <td><Button color="warning"
+                                                                        onClick={(e) => this.handleSendMessage(e, eventMessages.participant_id, eventMessages.event_id)}>
                                                                 Mesaj catre participant!</Button></td>
                                                         </tr>
                                                     );
@@ -424,14 +621,12 @@ class CardList extends React.Component {
                 </Modal>
 
 
-
-
                 <Modal isOpen={this.state.editModal} toggle={this.toggleEditModal} id={'editModal'}
                        className={this.props.className}
-                       size = "lg">
+                       size="lg">
                     <ModalHeader toggle={this.toggle}>Editeaza eveniment</ModalHeader>
                     <ModalBody>
-                        <EditEventForm colSize={12} editedEvent={this.state.currentEventDetails}/>
+                        <EditEventForm colSize={12} editedEvent={this.state.currentEventDetails} participantsList={this.state.participantsList}/>
                     </ModalBody>
                     <ModalFooter>
                         <Button color='secondary' onClick={this.toggleEditModal}>Cancel</Button>

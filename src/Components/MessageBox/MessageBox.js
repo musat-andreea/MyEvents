@@ -26,7 +26,7 @@ class MessageBox extends React.Component {
                 let messages = response.data;
                 this.setState({messages: messages});
 
-                console.log(messages);
+                // console.log(messages);
             })
     }
 

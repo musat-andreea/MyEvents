@@ -16,7 +16,7 @@ class AddInfo extends React.Component{
 
     onVarstaChange = (event) => {
         this.setState({varsta: event.target.value});
-        console.log(this.state);
+        // console.log(this.state);
     };
 
     onIntereseChange = (event) => {
@@ -29,7 +29,7 @@ class AddInfo extends React.Component{
 
     onSubmitAddInfo = (event) => {
         event.preventDefault();
-        console.log(this.state);
+        // console.log(this.state);
         fetch('http://localhost:3000/participants', {
             method: 'post',
             headers: {'Content-Type': 'application/json'},
@@ -40,7 +40,7 @@ class AddInfo extends React.Component{
             })
         })
             .then(response => {
-                console.log(response);
+                // console.log(response);
             })
     };
 

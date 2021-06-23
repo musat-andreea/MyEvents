@@ -3,7 +3,7 @@ import Select from 'react-select';
 import axios from "axios";
 import CovidFutureCasesChecker from "../SearchEvent/CovidFutureCasesChecker";
 import Row from "react-bootstrap/Row";
-
+import Cookies from 'js-cookie'
 
 class CurrentSituation extends React.Component {
 
@@ -30,24 +30,23 @@ class CurrentSituation extends React.Component {
 
         axios.get('http://localhost:5000/last_days_situation')
             .then((response) => {
-                console.log("res", response);
+                // console.log("res", response);
                 let LastDaySituation = response.data[0];
 
                 for (let i = 0; i < LastDaySituation.county_data.length; i++) {
                     let j = LastDaySituation.county_data[i];
                     let judet = j.county_name;
 
-                    console.log("aaaa", j);
-                    console.log("bbbbbbbbbb", judet);
+                    // console.log("aaaa", j);
+                    // console.log("bbbbbbbbbb", judet);
 
                     options[i] = {value: judet, label: judet};
 
                     county_info[judet] = j.total_cases;
-
                 }
 
                 let beforeLastDaySituation = response.data[13];
-                console.warn(response.data)
+                // console.warn(response.data)
 
                 for(let i =0; i < beforeLastDaySituation.county_data.length; i++) {
                     let j = beforeLastDaySituation.county_data[i];
@@ -56,14 +55,16 @@ class CurrentSituation extends React.Component {
                     let population = j.county_population;
 
                     let new_cases_TODAY = county_info[judet] - cases;
-                    console.log('TODAY', new_cases_TODAY)
+                    // console.log('TODAY', new_cases_TODAY)
                     rate[judet] = (new_cases_TODAY/ population ) * 1000;
-                    console.log(judet, rate[judet]);
+                    // console.log(judet, rate[judet]);
 
 
                 }
 
 
+                Cookies.set('current_infection_rate', rate);
+                Cookies.set('counties_options', options);
                 this.setState({
                     options: options,
                     county_info: county_info,
@@ -74,7 +75,7 @@ class CurrentSituation extends React.Component {
     }
 
     handleChangeEvent(event) {
-        console.log(this.state);
+        // console.log(this.state);
 
         this.setState({
             selected_county_info: this.state.county_info[event.value]
@@ -84,9 +85,6 @@ class CurrentSituation extends React.Component {
             selected_rate: this.state.rate[event.value],
             selectedCounty: event.value,
         });
-
-
-
     }
 
     render() {
@@ -106,15 +104,15 @@ class CurrentSituation extends React.Component {
                     {
                         this.state.selected_rate < 1.5
                             ?<div>
-                                <p>Scenariul VERDE</p>
+                                <p>Scenariul <span id='current_scenario' style={{color: 'green'}}>VERDE</span></p>
                             </div>
                             :(
                                 this.state.selected_rate > 3
-                                ? <div>
-                                    <p>Scenariu ROSU</p>
+                                    ? <div>
+                                        <p>Scenariu <span id='current_scenario' style={{color: 'red'}}>ROSU</span></p>
                                     </div>
                                     : <div>
-                                        <p>Scenariu GALBEN</p>
+                                        <p>Scenariu <span id='current_scenario' style={{color: 'yellow'}}>GALBEN</span></p>
                                     </div>
                             )
                     }
@@ -122,10 +120,10 @@ class CurrentSituation extends React.Component {
 
                 {
                     this.state.selectedCounty
-                    ?<CovidFutureCasesChecker locatie={this.state.selectedCounty} countyPopulation={this.state.county_population}/>
-                    :(
-                        ''
-                      )
+                        ?<CovidFutureCasesChecker locatie={this.state.selectedCounty} countyPopulation={this.state.county_population}/>
+                        :(
+                            ''
+                        )
                 }
 
             </div>

@@ -187,7 +187,6 @@ class App extends Component {
                                     <h2> Evenimentele tale </h2>
                                     <CardList col={12} userId={this.state.user.id}/>
 
-                                    <h1>MESAJELE PRIMITE</h1>
                                     <br/>
                                     <br/>
                                     <CreateEvent userId={this.state.user.id}/>

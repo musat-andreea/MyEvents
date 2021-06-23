@@ -57,7 +57,7 @@ class FavoriteEvents extends React.Component{
     getFavoriteEventsList() {
         axios.get(`http://localhost:3000/favoriteList?user_id=${Cookies.get('userId')}`)
             .then((response) => {
-                console.log("Rezultatul json din BD", response);
+                // console.log("Rezultatul json din BD", response);
                 let InfoAboutEvents = response.data[0];
 
                 //console.log("InfoAboutE: ", response.data.length);
@@ -65,7 +65,7 @@ class FavoriteEvents extends React.Component{
                 this.setState({eventsList: response.data});
 
                 // UNDEFINEDED
-                console.log("eventsList:", this.state.eventsList)
+                // console.log("eventsList:", this.state.eventsList)
             })
     }
 

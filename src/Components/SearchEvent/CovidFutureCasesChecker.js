@@ -44,7 +44,9 @@ class CovidFutureCasesChecker extends React.Component {
             })
     }
 
-    calculateScenarioFromRate(lastRate, scenario) {
+    calculateScenarioFromRate(lastRate) {
+        let scenario = '';
+
         if (lastRate < 1.5) {
             scenario = 'VERDE';
         } else if (lastRate > 3) {
