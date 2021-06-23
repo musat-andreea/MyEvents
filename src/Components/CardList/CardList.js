@@ -569,8 +569,7 @@ class CardList extends React.Component {
                                         <h2> Mesaje primite: </h2>
                                         <Table>
                                             <thead>
-                                            <th>Directia</th>
-                                            <th>Participant ID</th>
+                                            <th>Participant</th>
                                             <th>Mesaj</th>
                                             <th>Data mesajului</th>
                                             <th>Actiuni</th>
@@ -580,8 +579,7 @@ class CardList extends React.Component {
                                                 this.state.eventMessages.map((eventMessages) => {
                                                     return (
                                                         <tr>
-                                                            <td>{eventMessages.direction}</td>
-                                                            <td>{eventMessages.participant_id}</td>
+                                                            <td>{eventMessages.name}</td>
                                                             <td>{eventMessages.message}</td>
                                                             <td>{eventMessages.date}</td>
                                                             <td><Button color="warning"
