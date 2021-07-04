@@ -45,6 +45,7 @@ class CardList extends React.Component {
         this.toggle = this.toggle.bind(this);
         this.toggleEditModal = this.toggleEditModal.bind(this);
         this.handleLocationSearchChange = this.handleLocationSearchChange.bind(this);
+        this.handleDeleteEvent = this.handleDeleteEvent.bind(this);
         this.handleDenumireSearchChange = this.handleDenumireSearchChange.bind(this);
         this.handleMultiFilter = this.handleMultiFilter.bind(this);
         this.updateCurrentEventDetails = this.updateCurrentEventDetails.bind(this);
@@ -53,6 +54,31 @@ class CardList extends React.Component {
         this.openEditModal = this.openEditModal.bind(this);
     }
 
+    handleDeleteEvent(e, event_id) {
+        e.preventDefault();
+        if (window.confirm("Sunteti sigur ca doriti sa stergeti acest eveniment?")) {
+            fetch(`http://localhost:3000/deleteEvent?event_id=${event_id}`, {
+                method: 'delete',
+                headers: {'Content-Type': 'application/json'}
+            })
+                .then((result) => {
+                    axios.get(`http://localhost:3000/getEvents?managerId=${Cookies.get('userId')}`)
+                        .then((response) => {
+                            console.log("Rezultatul json din BD", response);
+                            let InfoAboutEvents = response.data[0];
+
+                            //console.log("InfoAboutE: ", response.data.length);
+
+                            this.setState({eventsList: response.data});
+                        })
+                        .then((result) => {
+                            this.state.eventsList.map((event) => {
+                                this.setPredictedScenarioInformation(event);
+                            });
+                        })
+                })
+        }
+    }
 
     handleDenumireSearchChange(event) {
         if (Cookies.get('rol') == 'ORGANIZATOR') {
@@ -136,6 +162,7 @@ class CardList extends React.Component {
                 console.log("participantsList:", this.state.participantsList)
             })
     }
+
     displayParticipantsList(e, event) {
         this.setParticipantsList(event.managerid, event.eventid);
         this.updateCurrentEventDetails(e, event);
@@ -175,7 +202,7 @@ class CardList extends React.Component {
                     console.log("eventsList:", this.state.eventsList)
                 })
         } else {
-            axios  .get(`http://localhost:3000/getEvents?locatie=${document.getElementById('locatie').value}&denumire=${document.getElementById('denumire').value}`)
+            axios.get(`http://localhost:3000/getEvents?locatie=${document.getElementById('locatie').value}&denumire=${document.getElementById('denumire').value}`)
                 .then((response) => {
                     console.log("Rezultatul json din BD", response);
                     let InfoAboutEvents = response.data[0];
@@ -205,6 +232,7 @@ class CardList extends React.Component {
     }
 
     updateCurrentEventDetails(e, eventDetails) {
+        this.setParticipantsList(eventDetails.managerid, eventDetails.eventid);
         this.setState({
             currentEventDetails: {
                 denumire: eventDetails.denumire,
@@ -362,7 +390,7 @@ class CardList extends React.Component {
                 }
             })
             .catch((response) => {
-                if (response.status === 400)   {
+                if (response.status === 400) {
                     console.log(response.data.error);
                 }
             })
@@ -378,30 +406,30 @@ class CardList extends React.Component {
         let scenario = this.getCountyScenario(county);
 
         if (scenario === 'VERDE') {
-            return 0.7 * maximumSeatsNormalSituation;
+            return parseInt(0.5 * maximumSeatsNormalSituation);
         }
 
         if (scenario === 'ROSU') {
-            return 0.3 * maximumSeatsNormalSituation;
+            return 0 * maximumSeatsNormalSituation;
         }
 
         if (scenario === 'GALBEN') {
-            return 0.5 * maximumSeatsNormalSituation;
+            return parseInt(0.3 * maximumSeatsNormalSituation);
         }
     }
 
     calculateTotalSeatsInPredictedScenario(maximumSeatsNormalSituation, event_id) {
         if (this.state.hasOwnProperty(event_id)) {
             if (this.state[event_id].predictedScenario === 'VERDE') {
-                return 0.7 * maximumSeatsNormalSituation;
+                return parseInt(0.5 * maximumSeatsNormalSituation);
             }
 
             if (this.state[event_id].predictedScenario === 'ROSU') {
-                return 0.3 * maximumSeatsNormalSituation;
+                return 0 * maximumSeatsNormalSituation;
             }
 
             if (this.state[event_id].predictedScenario === 'GALBEN') {
-                return 0.5 * maximumSeatsNormalSituation;
+                return parseInt(0.3 * maximumSeatsNormalSituation);
             }
         }
 
@@ -448,11 +476,11 @@ class CardList extends React.Component {
                             let judet = event.judet;
                             let predictedScenario = 'Nedefinit';
 
-                            if (this.state.hasOwnProperty(event.eventid))   {
+                            if (this.state.hasOwnProperty(event.eventid)) {
                                 predictedScenario = this.state[event.eventid].predictedScenario;
                             }
 
-                            let currentScenarioSeats =  this.calculateTotalSeatsAndScenario(event.eventid, event.nr_locuri, judet);
+                            let currentScenarioSeats = this.calculateTotalSeatsAndScenario(event.eventid, event.nr_locuri, judet);
                             let predictedScenarioSeats = this.calculateTotalSeatsInPredictedScenario(event.nr_locuri, event.eventid);
 
                             if (currentScenarioSeats != predictedScenarioSeats && predictedScenarioSeats != event.nr_locuri) {
@@ -515,6 +543,9 @@ class CardList extends React.Component {
                                                     <Button color="primary" style={{width: '100%'}} onClick={
                                                         (e) => this.viewMessages(e, event)
                                                     }>Vizualizeaza mesaje</Button>
+                                                    <Button color="danger" style={{width: '100%'}}  onClick={
+                                                        (e) => this.handleDeleteEvent(e, event.eventid)
+                                                    }>Stergeti evenimentul</Button>
                                                 </div>
                                             )
                                     }
@@ -532,7 +563,8 @@ class CardList extends React.Component {
                         <p>Durata evenimentului: {this.state.currentEventDetails.durata_ev} zile</p>
                         <p>Tipul evenimentului: {this.state.currentEventDetails.tip_eveniment}</p>
                         <p>Tematica evenimentului: {this.state.currentEventDetails.tematica}</p>
-                        <p>Numarul de locuri: {this.state.currentEventDetails.nr_locuri}</p>
+                        <p>Numarul de locuri totale: {this.state.currentEventDetails.nr_locuri}</p>
+                        <p>Numarul de locuri rezervate: {this.state.participantsList.length}</p>
                         <br/>
                         {
                             Cookies.get('rol') === 'ORGANIZATOR'
@@ -624,7 +656,8 @@ class CardList extends React.Component {
                        size="lg">
                     <ModalHeader toggle={this.toggle}>Editeaza eveniment</ModalHeader>
                     <ModalBody>
-                        <EditEventForm colSize={12} editedEvent={this.state.currentEventDetails} participantsList={this.state.participantsList}/>
+                        <EditEventForm colSize={12} editedEvent={this.state.currentEventDetails}
+                                       participantsList={this.state.participantsList}/>
                     </ModalBody>
                     <ModalFooter>
                         <Button color='secondary' onClick={this.toggleEditModal}>Cancel</Button>
