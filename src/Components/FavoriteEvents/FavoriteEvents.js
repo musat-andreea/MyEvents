@@ -86,6 +86,7 @@ class FavoriteEvents extends React.Component{
         })
             .then((result) => {
                 this.getFavoriteEventsList()
+                window.location.reload()
             })
     };
 

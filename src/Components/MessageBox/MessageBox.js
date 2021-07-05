@@ -57,8 +57,7 @@ class MessageBox extends React.Component {
     render() {
         return (
             <div>
-                <h3>Evenimentul:</h3>
-                <h2>Numele partipantului:</h2>
+                <br />
                 <Row>
                     <Col md={6}  style={{border: '1px solid green', backgroundColor: 'lightblue', opacity: '0.9', margin: 'auto'}}>
                         {

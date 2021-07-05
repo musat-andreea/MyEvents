@@ -40,6 +40,7 @@ class CardList extends React.Component {
             participantsList: [],
             eventMessages: [],
             messageBox: '',
+            notificationsSent: [],
         };
 
         this.toggle = this.toggle.bind(this);
@@ -332,6 +333,7 @@ class CardList extends React.Component {
                 eventid: event_id
             })
         })
+            .then((result) => window.location.reload())
     };
 
     handleSendMessage(e, participantId, eventId) {
@@ -483,12 +485,13 @@ class CardList extends React.Component {
                             let currentScenarioSeats = this.calculateTotalSeatsAndScenario(event.eventid, event.nr_locuri, judet);
                             let predictedScenarioSeats = this.calculateTotalSeatsInPredictedScenario(event.nr_locuri, event.eventid);
 
-                            if (currentScenarioSeats != predictedScenarioSeats && predictedScenarioSeats != event.nr_locuri) {
+                            if (currentScenarioSeats != predictedScenarioSeats && predictedScenarioSeats != event.nr_locuri && !this.state.notificationsSent.includes(event.eventid)) {
                                 notifications.sendMailNotification(
                                     event.email,
                                     "Posibila schimbare in situatia epidemiologica",
                                     `Buna ziua, evenimentul ${event.denumire} este posibil sa fie impactat de situatia epidemiologica. Numarul de locuri permis acum este: ${currentScenarioSeats} si va deveni ${predictedScenarioSeats}`
                                 );
+                                this.state.notificationsSent.push(event.eventid);
                             }
                             return (
                                 <Card className={'col-md-3'}>
@@ -543,7 +546,7 @@ class CardList extends React.Component {
                                                     <Button color="primary" style={{width: '100%'}} onClick={
                                                         (e) => this.viewMessages(e, event)
                                                     }>Vizualizeaza mesaje</Button>
-                                                    <Button color="danger" style={{width: '100%'}}  onClick={
+                                                    <Button color="danger" style={{width: '100%'}} onClick={
                                                         (e) => this.handleDeleteEvent(e, event.eventid)
                                                     }>Stergeti evenimentul</Button>
                                                 </div>
