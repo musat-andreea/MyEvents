@@ -120,7 +120,7 @@ class CurrentSituation extends React.Component {
 
                 {
                     this.state.selectedCounty
-                        ?<CovidFutureCasesChecker locatie={this.state.selectedCounty} countyPopulation={this.state.county_population}/>
+                        ?<CovidFutureCasesChecker locatie={this.state.selectedCounty} countyPopulation={this.state.county_population} currentNumberOfCases={this.state.selected_county_info}/>
                         :(
                             ''
                         )

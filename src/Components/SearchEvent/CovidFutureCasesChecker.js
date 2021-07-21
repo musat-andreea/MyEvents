@@ -29,7 +29,12 @@ class CovidFutureCasesChecker extends React.Component {
                 lastDayCases = data.cases[totalPredictedDays - 1];
                 beforeLastDayCases = data.cases[totalPredictedDays - 2];
 
+                if (!beforeLastDayCases)    {
+                    beforeLastDayCases = this.props.currentNumberOfCases;
+                }
+
                 newCasesLastDay = lastDayCases - beforeLastDayCases;
+
 
                 lastRate = (newCasesLastDay / this.props.countyPopulation) * 1000;
 
